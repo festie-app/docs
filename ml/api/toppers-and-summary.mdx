@@ -11,7 +11,7 @@ description: "ഫെസ്റ്റിവലിലെ ആകെ വിവരങ�
 
 | Endpoint | ലഭിക്കുന്നത് |
 | :--- | :--- |
-| `GET /public-api/v1/team-profile` | `rank`, `teamCount`, `totalPoints`, `percentage` (സബ് ഫെസ്റ്റിലെ ആകെ പോയിന്റിൽ ടീമിന്റെ പങ്ക്), `candidateCount`, `stats`, `upcoming` (പ്രസിദ്ധീകരിച്ച ഷെഡ്യൂളുള്ളതും ഫലം വരാത്തതുമായ പ്രോഗ്രാമുകൾ). |
+| `GET /public-api/v1/team-profile` | `rank`, `teamCount`, `totalPoints`, `percentage` (സബ് ഫെസ്റ്റിലെ ആകെ പോയിന്റിൽ ടീമിന്റെ പങ്ക്), `candidateCount`, `stats`. `stats.upcomingResults` ഫലം വരാത്ത പ്രോഗ്രാമുകളുടെ എണ്ണം മാത്രമാണ് (പേരുകൾ ലഭിക്കില്ല). |
 | `GET /public-api/v1/team-results` | ടീമിന് സ്ഥാനമോ ഗ്രേഡോ ലഭിച്ച പ്രോഗ്രാം ഫലങ്ങൾ (`programme-results` രൂപത്തിൽ); സ്ഥാനം ലഭിച്ചവ ആദ്യം. |
 | `GET /public-api/v1/team-toppers` | ഓരോ കാറ്റഗറിയിലും ടീമിന്റെ `points`, `rank`, ഉയർന്ന പോയിന്റ് (`topPoints`). |
 | `GET /public-api/v1/team-skill-toppers` | ടീമിലെ ഓരോ സ്കില്ലിലെയും ഒന്നാം റാങ്ക് കാൻഡിഡേറ്റ്. |

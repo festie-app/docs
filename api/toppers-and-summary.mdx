@@ -7,7 +7,7 @@ These endpoints provide high-level festival statistics and counts, configured to
 
 ## Sub-festivals with Team Ranking
 
-Every active sub-festival with its teams ranked by published points, in one call (same ranking as `summary`).
+Every active sub-festival with its teams ranked by published points, in one call. Only teams with a published result are returned; a sub-festival with nothing published has an empty `teams` list.
 
 ```http
 GET /public-api/v1/subfest-with-team-ranking
@@ -41,9 +41,9 @@ Data for one team's profile page. All four endpoints take `team` (the team's `di
 
 | Endpoint | Returns |
 | :--- | :--- |
-| `GET /public-api/v1/team-profile` | `rank`, `teamCount`, `totalPoints` (published), `percentage` (share of all published points in the sub-festival), `candidateCount`, `stats` (`publishedResults`, `positions`, `grades`, `upcomingResults`, a count of all the team's programmes without a published result) and `upcoming` (names only for programmes with a published schedule and no published result yet). |
+| `GET /public-api/v1/team-profile` | `rank`, `teamCount`, `totalPoints` (published), `percentage` (share of all published points in the sub-festival), `candidateCount`, `stats` (`publishedResults`, `positions`, `grades`, `upcomingResults`, a count of the team's programmes without a published result; no programme names are returned). |
 | `GET /public-api/v1/team-results` | Programmes in which the team got a position or grade, in the same shape as `programme-results`. Programmes where the team placed come first (best placing first), then graded ones. Paginated (`page`, `limit`). |
-| `GET /public-api/v1/team-toppers` | The team's `points`, `rank` and the best category `topPoints` for each category, from published team topper lists scoped by Category only. |
+| `GET /public-api/v1/team-toppers` | The team's `points`, `rank` and the best category `topPoints` for each category, from published team topper lists scoped by Category only, plus `skills` (the team's published `points` per skill: from a team list scoped by Skill, else the candidate Skill + Team lists summed per skill). |
 | `GET /public-api/v1/team-skill-toppers` | The rank 1 candidate for each skill within the team, from published candidate topper lists with the Skill and Team dimensions. |
 
 ```bash
