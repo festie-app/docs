@@ -35,6 +35,41 @@ GET /public-api/v1/subfest-with-team-ranking
 }
 ```
 
+## Topper Lists
+
+Four fixed endpoints, one per topper list. They take only `subFestSlug` or `subFestId` (no scope or type parameters) and return **published data only**: the default published topper list of that kind (else the first by display order), with its entries already ranked.
+
+| Endpoint | List |
+| :--- | :--- |
+| `GET /public-api/v1/overall-team-toppers` | Teams, ranked across the whole sub-festival. |
+| `GET /public-api/v1/overall-candidate-toppers` | Candidates, ranked across the whole sub-festival. |
+| `GET /public-api/v1/category-team-toppers` | Teams, ranked within each category. |
+| `GET /public-api/v1/category-candidate-toppers` | Candidates, ranked within each category. |
+
+Entries are ordered by `rank` (ties share a rank and are kept), and category lists by the category display order. Each entry has `rank`, `points`, `programCount`, and `candidate`, `team` or `groupCategory` as applicable. Hidden entries and entries with no points are never returned.
+
+```bash
+curl -X GET "https://api.festie.app/public-api/v1/category-candidate-toppers?subFestSlug=pool-a" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+```json
+{
+  "context": { "festivalId": "…" },
+  "placeholder": { "id": "…", "label": "Category - Candidate Topper", "entityType": "CANDIDATE", "scopeType": "CATEGORY" },
+  "entries": [
+    {
+      "id": "…",
+      "rank": 1,
+      "points": 24,
+      "programCount": 3,
+      "candidate": { "name": "…", "chestNo": "101", "team": { "name": "…" } },
+      "groupCategory": { "id": "…", "name": "SENIOR", "displayOrder": 1 }
+    }
+  ]
+}
+```
+
 ## Team Profile
 
 Data for one team's profile page. All four endpoints take `team` (the team's `displayName` or `name`, case-insensitive) plus `subFestSlug` or `subFestId`, and return **published data only**.
