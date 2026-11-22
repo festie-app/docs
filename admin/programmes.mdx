@@ -49,3 +49,65 @@ Click the **Add Programme** button. You will go through several configuration ta
 - **Custom Order:** For certain sports or track events, you may need teams to perform in a specific order (e.g., Alpha Team first, Blue Team second). You can manually set the team appearance order here.
 
 Click **Save** once you've configured the settings. The programme will appear in your list.
+
+---
+
+## Judgment settings
+
+Judgment settings control how judges score a programme and how ties are handled. Open a programme and go to **Settings** > **Judgment**.
+
+You need permission to edit programme settings to change them.
+
+- **Judgement criteria:** The scoring columns judges use.
+- **Judgement window:** When judges can score. **Open** means always, **Closed** means never, and **Scheduled** means between the start and end time you set.
+- **Judgment settings:** Choose **Sub-fest default** to use the sub-fest's settings, or **Custom** to set this programme's own.
+- **Show concept and instructions:** Shows the instruction you type here on the judge's scorecard.
+- **Show timer for performance duration:** Gives judges a timer.
+- **Require judge comment:** Judges must write a comment for each candidate.
+- **Lock on submission:** Judges can't edit scores after they submit.
+- **Require selfie before judgment:** Judges need a selfie on file before they can submit scores.
+- **Allow generated ties:** Equal scores share the same rank and position.
+- **Tie breaker mode:** Used when ties are not allowed. Choose **Lead judge**, **Judgment column** or **None**.
+- **Tie breaker column:** The criteria column that breaks ties, when the mode is **Judgment column**.
+- **Candidate details visible to judges:** Choose what judges see for each candidate, such as code letter, chest number, name or team.
+
+<Note>
+Only programmes with **Online Judgement** show all of these settings. Other programmes show only **Judgement criteria** and **Judgement window**. If you renamed terms like "judge" or "candidate", the labels use your names.
+</Note>
+
+### Change judgment settings after results
+
+Once a programme has results (generated, checked or published), most judgment settings stay editable. Changing them does not affect scores or results.
+
+These settings are locked while results exist:
+
+- **Judgement criteria**
+- **Allow generated ties** (shown as **Allow ties in generated results** on the results page)
+- **Tie breaker mode** (shown as **Tie breaker**)
+- **Tie breaker column** (shown as **Tie-breaking criteria column**)
+
+You can still change everything else, including the judgement window, instructions, timer, judge comment, lock on submission, selfie and visible candidate details.
+
+**From the programme settings:**
+
+1. Open the programme and go to **Settings** > **Judgment**.
+2. You see the note "Criteria and tie settings are locked while results exist." Only the locked rows are greyed out.
+3. Change the settings you need and save.
+
+**From the results page:**
+
+1. Open the programme's results and go to the settings tab.
+2. You see the note "Tie settings are locked while results exist."
+3. Change the other settings and click **Save settings**.
+
+To change tie settings, remove the generated results first. To change the criteria, remove the generated results and the judges' scores, because scores are saved per criteria column. If you switch **Judgment settings** between **Sub-fest default** and **Custom**, and that would change the tie settings, you see "Remove generated results before changing tie settings for this programme."
+
+### Change judgment settings for many programmes
+
+1. Go to **Programmes** and select the programmes you want to change.
+2. Click **Settings**. The **Bulk Programme Settings** dialog opens.
+3. Under **Judgment Settings**, tick the rows you want to change and set their values.
+4. Click **Review Changes**. Check the list under **Settings to apply** and **Programmes to update**. Remove anything you don't want with the **X**.
+5. Click **Apply Settings**.
+
+Judgment settings also apply to programmes that already have results. The exceptions are tie settings and judgement criteria: if a selected programme has results, changes to those are refused.
