@@ -5,17 +5,76 @@ description: "Generate chest cards, judgement sheets, and programme posters."
 
 Festie automatically generates print-ready media for your festival based on the data you enter.
 
-## Downloading Candidate ID Cards (Chest Cards)
+## Download ID cards
 
-ID cards include the candidate's name, chest number, team, your festival's logo, and a unique QR code that links directly to their public profile on the festival website.
+ID cards (chest cards) are printed from an ID card template. What each card shows depends on the template you pick. Festie places several cards on each page of one PDF, so you can print and cut them.
 
-1. Navigate to `Subfest > Candidates`.
-2. Select the candidates you want to generate cards for (you can select all).
-3. Click the **More Options** menu or the download action and select **Download Chest Card**.
-4. Choose an available ID card template.
-5. Wait for the system to prepare the PDF, then download and print.
+### Who can do this
 
-*Note: If your festival logo is missing, ensure you have uploaded it in the Festival Settings!*
+- Admins whose role has the **Download chest card** permission.
+- Team managers, for their own team, when the sub-fest allows it. An admin turns this on in **Settings** → **Team Access** → **Download chest cards**.
+
+### Download ID cards for several candidates
+
+1. Open **Candidates**.
+2. Select the candidates you want. You can select all.
+3. In the bar at the bottom, click **Download Chest Card**.
+4. In **ID card template**, pick a template and click **Next**.
+5. In **Page layout**, set how the cards sit on each page. See [Set the page layout](#set-the-page-layout).
+6. Click **Download**.
+
+Festie prepares the PDF in the background. When it is ready, download it from the downloads panel.
+
+### Download one candidate's ID card
+
+1. Open **Candidates** and click a candidate.
+2. At the top of the page, click **Download Chest Card**.
+3. Follow steps 4 to 6 above.
+
+### Set the page layout
+
+The **Page layout** step opens full screen, with settings on the left and a preview on the right. Click the full-screen button next to the close button to switch to a smaller window, or back to full screen. The preview shows the template inside each card. Each card has a number.
+
+**Page**
+
+- **Unit**: the unit for every size on this step: mm, cm, inch, pt or px.
+- **Page size**: A3, A4, A5, Letter, Legal or Custom.
+- **Page width** and **Page height**: change these to set your own size. The page size switches to **Custom**.
+- **Portrait** or **Landscape**: turns the page.
+
+**Cards**
+
+- **Card width** and **Card height**: the printed size of one card. These start at the template's real size.
+- **Per page**: how many cards go on one page. Below it, Festie shows how many fit.
+- **Margin**: space between the page edge and the cards.
+- **Gap across** and **Gap down**: space between cards.
+
+Festie places the cards in a grid, row by row from the top left.
+
+**Place cards yourself**
+
+Turn on **Advanced** to place each card by hand. A table shows each card's **X**, **Y** and **Rotate (°)**, measured from the top-left corner of the page. Type a value, or click **↻** to turn a card 90°.
+
+On the preview you can also:
+
+- Drag a card to move it. If **Advanced** is off, it turns on.
+- Click a card, then drag the rotate handle above it to turn it. Hold **Shift** to turn it freely.
+- Press the arrow keys to nudge the selected card by 1 mm. Hold **Shift** to move it by 10 mm.
+- Press **Esc** to clear the selection.
+
+**Fix layout problems**
+
+If something is wrong, Festie shows a message and **Download** stays off until you fix it.
+
+- A card outside the page turns red, and its row shows "Outside the page."
+- "Only 6 fit on one page." means **Per page** is more than the grid can hold. Lower **Per page**, make the cards smaller, or reduce the margin and gaps.
+- "The item doesn't fit on the page." means one card is bigger than the page.
+- "Item size is too small." means the card width or height is too small.
+- "Enter a number in every field." means a field is empty.
+
+**Save the layout**
+
+**Save this layout** is ticked by default. It keeps this layout on the template, so it is filled in the next time anyone downloads with it. Only admins with the **Download chest card** permission see this option. Team managers can set a layout, but it isn't saved.
 
 ## Downloading Judgement Sheets & Participant Lists
 
