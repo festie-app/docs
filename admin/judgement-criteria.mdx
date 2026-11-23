@@ -1,0 +1,51 @@
+---
+title: "Judgement criteria"
+description: "Set the scoring columns judges use, and change max marks even after judges have scored."
+---
+
+A judgement criteria is the set of scoring columns judges fill in, such as "Presentation /30". Each column has a name, a max mark and an optional description. You pick a judgement criteria for each programme in the programme's judgment settings.
+
+Festival owners, and roles that can edit judgement criteria, can add, edit and delete them.
+
+## Edit a judgement criteria
+
+1. Go to **Settings** > **Judgement Criteria**.
+2. Find the criteria and click **Edit** in its row actions. The **Edit Judgement Criteria** dialog opens.
+3. Change the **Name**, or a column's **Column**, **Max mark** or **Description**. Click **Add column** to add a column.
+4. Click **Save Changes**.
+
+If no programme has scores with this criteria yet, your changes save straight away.
+
+## Change max marks after scoring
+
+You can change max marks even after judges have scored with the criteria. Festie shows you which programmes the change affects before anything is saved.
+
+1. In the **Edit Judgement Criteria** dialog, change one or more **Max mark** values.
+2. Click **Save Changes**.
+3. If programmes already have scores, the dialog switches to **Review score changes**. At the top you see the old and new total, for example "Total max marks: /100 → /150".
+4. Check the groups of programmes. Each programme shows its code, name, round (if any), sub-fest and status.
+5. Click **Confirm** to apply the change, or **Back** to return to the form.
+
+### What you see in the review
+
+- **Rescaled:** programmes whose results are not generated yet. Every judge's score in a changed column is scaled to the new max mark. For example, if Presentation goes from 30 to 45, a score of 15 becomes 22.5. A judge's total of 53/100 becomes 79.5/150.
+- **Kept at /100** (shows the old total): programmes whose results are generated, checked or published. They keep the marks you already announced. Festie moves them to an automatic copy of the criteria with the old max marks, named like "Elocution (old /100)". You will see this copy in your **Judgement Criteria** list.
+- **Blocked:** shown when you added or removed columns while programmes without generated results have scores. You see "Columns can't be added or removed while these programmes have scores. Change only max marks, or remove their scores first." **Confirm** stays disabled until you fix this.
+
+<Warning>
+If the columns don't all change by the same ratio, you see "Columns change by different ratios. Rankings may change." For example, changing 30/30/40 to 50/50/50 gives some columns more weight than before. If every column changes by the same ratio, rankings stay the same.
+</Warning>
+
+### Good to know
+
+- Rescaled scores are rounded to 2 decimals.
+- Each rescaled score appears in the programme's score **History**, marked as a criteria rescale.
+- Programme rounds are handled the same way as programmes.
+- Programmes judged by manual result or manual score are not affected, and don't stop the change.
+
+## Delete a judgement criteria
+
+1. Go to **Settings** > **Judgement Criteria**.
+2. Click **Delete** in the criteria's row actions and confirm.
+
+You can't delete a criteria while programmes using it have scores or results.

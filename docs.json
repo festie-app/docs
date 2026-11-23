@@ -67,6 +67,7 @@
                   "admin/dashboard",
                   "admin/categories-and-teams",
                   "admin/position-and-grade-criteria",
+                  "admin/judgement-criteria",
                   "admin/candidate-chest-number-rules",
                   "admin/users-and-roles"
                 ]
