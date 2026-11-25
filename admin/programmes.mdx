@@ -41,14 +41,63 @@ Click the **Add Programme** button. You will go through several configuration ta
 - **Category Eligibility:** By default, only candidates from the selected Category can participate. For "General" events where anyone can join, uncheck this box and specify the allowed categories.
 
 ### 4. Score Settings
-- Enable or disable **Position Criteria** and **Grade Criteria** based on whether this event awards them.
-- **Point Percentages:** You can control how many points are actually awarded. If a 1st place gives 10 points, but you want the candidate to receive 0 points (perhaps it's a fun event), you can set the *Candidate Point Percentage* to `0%`. You can adjust this for both Candidate and Team percentages independently.
+- Turn on **Enable Position** and **Enable Grading** if this event awards positions or grades, then pick the **Position Criteria** and **Grade Criteria** to use.
+- **Point Percentages:** You can control how many points are actually awarded. If a 1st place gives 10 points, but you want the candidate to receive 0 points (perhaps it's a fun event), you can set **Position Candidate Point %** to `0`. You can set the candidate and team percentages for position and grade independently.
+
+You can change these later, even after scoring. See [Change score settings after evaluation](#change-score-settings-after-evaluation).
 
 ### 5. Call Letter Settings
 - **Generation Mode:** Choose whether the system should generate call letters using Alphabets (A, B, C) or Numbers (1, 2, 3).
 - **Custom Order:** For certain sports or track events, you may need teams to perform in a specific order (e.g., Alpha Team first, Blue Team second). You can manually set the team appearance order here.
 
 Click **Save** once you've configured the settings. The programme will appear in your list.
+
+---
+
+## Change score settings after evaluation
+
+You can change a programme's score settings after it is **Evaluated** or its **Results generated**. Score settings are position (on or off, and the position template), grading (on or off, and the grade template) and point percentages.
+
+You need permission to edit programme settings to change them.
+
+**From the Overview tab:**
+
+1. Open the programme and go to the **Overview** tab.
+2. In the **Judging & Scoring** card, turn **Position Template** or **Grade Template** on or off.
+3. To pick a different template, click the pencil next to it.
+
+**From the Settings tab:**
+
+1. Open the programme and go to **Settings** > **Score**.
+2. You see the note "Score settings are locked because score or result data exists for this programme."
+3. Click **Edit score settings**. The fields unlock.
+4. Change the settings you need and click **Save**.
+
+**For many programmes:**
+
+1. Go to **Programmes** and select the programmes you want to change.
+2. Click **Settings**. The **Bulk Programme Settings** dialog opens.
+3. Under **Score Settings**, set the values you want.
+4. Click **Review Changes**, then click **Apply Settings**.
+
+### What happens to results
+
+- **Results generated:** you see **Regenerate results?** Click **Regenerate** to save. Festie regenerates the results and recalculates points.
+- **Evaluated** (scores, but no results yet): the setting is saved. No results are generated.
+
+### When score settings stay locked
+
+Score settings can't be changed once results are **Checked to publish**, **Checked to unpublish** or **Published**:
+
+- On the **Overview** tab, the controls are disabled.
+- On the **Settings** tab, you see "Score settings are locked while results are checked or published." There is no **Edit score settings** button.
+- In bulk **Settings**, these programmes are highlighted with a warning. You can't apply until you remove them, or remove the score fields.
+
+To change them, archive the result first.
+
+<Note>
+**Judgement criteria** and **Judgement type** are not part of this. They stay locked once scores exist.
+</Note>
 
 ---
 
