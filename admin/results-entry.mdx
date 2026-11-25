@@ -25,6 +25,82 @@ Use this if you want the system to calculate the final positions based on raw sc
 6. Click **Save Changes** and then click **Generate Result**.
 7. Festie will automatically calculate the totals and assign 1st, 2nd, and 3rd positions!
 
+## Edit a candidate's total
+
+Judges enter scores, and Festie calculates each candidate's total from them. If a total needs a fix, you can type it directly instead of editing judge by judge.
+
+**Who can do this:** admins whose role has the **Edit candidate totals** permission. Roles that could already edit scores get it automatically. Judges, teams, stage volunteers and volunteers can't.
+
+**When it is available:** results are already generated, and the programme uses **Manual Score** or **Online Judgement**. It isn't available for **Manual Result** or round-based programmes.
+
+1. Go to **Programmes** and open the programme.
+2. Open the **Scores** tab.
+3. Click **Edit totals**. The **Total** column turns into number fields.
+4. Type the new total for each candidate you want to change. It must be between 0 and the out-of value.
+5. Click **Save totals**.
+
+Festie saves only the totals you changed. If you changed nothing, you see "No totals changed."
+
+### What happens after you save
+
+- Results regenerate. Position, grade and points are recalculated from the new totals.
+- If the results were published or checked, they are unpublished. Check and publish them again.
+- Edited rows show an **Edited** badge.
+- The programme is hidden from the judge panel.
+- **Edit score** and **Remove scores** are turned off. You see "Totals edited. Revert to edit judge-wise."
+
+## Revert to judge scores
+
+Use this to go back to the totals calculated from the judges' scores.
+
+1. Open the programme and go to the **Scores** tab.
+2. Click **Revert to judge scores**.
+3. In the confirmation, click **Revert**.
+
+Festie removes the edited totals and regenerates the results from the judge scores. Judges see the programme again, and you can edit judge by judge again.
+
+<Note>
+  If you remove the results, the edited totals are removed too and judge-wise editing is unlocked.
+</Note>
+
+## Mark a programme to review
+
+Use this to flag a programme that is scored but needs a second look before you generate its results. Flagged programmes get a **To review** badge, and you can filter the Results page to see only them.
+
+**Who can do this:** admins whose role has the **Mark to review** permission ("Flag evaluated programmes to review."). Roles that can already manage results get it automatically. Judges and teams can't.
+
+**When it is available:** the programme is **Evaluated** (scored, results not generated yet). The button doesn't show for other programmes.
+
+### Mark one programme
+
+1. Go to `Subfest > Results`.
+2. Open an **Evaluated** programme.
+3. Click **Mark to review**.
+
+The **To review** badge appears next to the status badge on the programme card and at the top of the drawer. The button changes to **Clear review**. Click it to remove the flag.
+
+### Mark several programmes
+
+1. Go to `Subfest > Results` and click **Select**.
+2. Tick the programmes.
+3. In the bar at the bottom, click **Mark to review** or **Clear review**.
+
+Programmes that are not **Evaluated** are skipped.
+
+### Show only flagged programmes
+
+Click **To review** above the filters. Click it again to turn it off. It works together with the status tabs. It is most useful on the **Scored** tab. The filter is saved in the page link, so you can share the filtered view.
+
+### When the flag clears
+
+- Festie clears it when results are generated for the programme.
+- Festie clears it when you remove the scores and the programme goes back to **Draft**.
+- Saving scores again does **not** clear it. Click **Clear review** yourself.
+
+<Note>
+  The flag belongs to one sub-festival. It is not copied to other sub-festivals when you sync settings.
+</Note>
+
 <Note>
   Saving a result does **not** automatically publish it to the public website. You must use the Result Release feature to make it public.
 </Note>
