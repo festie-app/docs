@@ -10,7 +10,7 @@ description: "Festie നൽകുന്ന പബ്ലിക് REST API ഉപ
 ഡെവലപ്പർമാർക്കുള്ള എല്ലാ പബ്ലിക് API അഭ്യർത്ഥനകളും (requests) HTTPS വഴി താഴെ പറയുന്ന അഡ്രസ്സിലാണ് ലഭിക്കുന്നത്:
 
 ```bash
-https://api.festie.app/public-api/v1
+https://public-api.festie.app/public-api/v1
 ```
 
 നിങ്ങൾ സ്വന്തം ഡൊമൈൻ അല്ലെങ്കിൽ self-hosted സെർവറാണ് ഉപയോഗിക്കുന്നതെങ്കിൽ അതിനനുസരിച്ചുള്ള API ഡൊമൈൻ നൽകുക.
@@ -70,7 +70,7 @@ https://api.festie.app/public-api/v1
 - **Query Parameter:** `subFestId=<uuid>` അല്ലെങ്കിൽ `subFestSlug=<slug>` ആയി നൽകാം.
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/teams?subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/teams?subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 

@@ -49,7 +49,7 @@ Four fixed endpoints, one per topper list. They take only `subFestSlug` or `subF
 Entries are ordered by `rank` (ties share a rank and are kept), and category lists by the category display order. Each entry has `rank`, `points`, `programCount`, and `candidate`, `team` or `groupCategory` as applicable. Hidden entries and entries with no points are never returned.
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/category-candidate-toppers?subFestSlug=pool-a" \
+curl -X GET "https://public-api.festie.app/public-api/v1/category-candidate-toppers?subFestSlug=pool-a" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -82,7 +82,7 @@ Data for one team's profile page. All four endpoints take `team` (the team's `di
 | `GET /public-api/v1/team-skill-toppers` | The rank 1 candidate for each skill within the team, from published candidate topper lists with the Skill and Team dimensions. |
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/team-profile?subFestSlug=pool-a&team=DHIC%20Kannadipparamba" \
+curl -X GET "https://public-api.festie.app/public-api/v1/team-profile?subFestSlug=pool-a&team=DHIC%20Kannadipparamba" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -104,7 +104,7 @@ GET /public-api/v1/summary
 ### Example Request
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/summary?subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/summary?subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -171,7 +171,7 @@ GET /public-api/v1/topper-placeholders
 ### Example Request
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/topper-placeholders?subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/topper-placeholders?subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -244,7 +244,7 @@ GET /public-api/v1/toppers
 ### Example Request
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/toppers?topperPlaceholderId=cb8edb2d-9d63-40e5-b082-516d7cbce961&subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/toppers?topperPlaceholderId=cb8edb2d-9d63-40e5-b082-516d7cbce961&subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -329,7 +329,7 @@ GET /public-api/v1/page-toppers
 ### Example Request
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/page-toppers?subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/page-toppers?subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 

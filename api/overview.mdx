@@ -10,10 +10,10 @@ Festie provides a developer-friendly REST API (`/public-api/v1`) that enables yo
 All developer public API requests are served over HTTPS from your Festie API domain:
 
 ```bash
-https://api.festie.app/public-api/v1
+https://public-api.festie.app/public-api/v1
 ```
 
-If you are running a self-hosted instance or custom environment, replace `api.festie.app` with your deployed API domain.
+If you are running a self-hosted instance or custom environment, replace `public-api.festie.app` with your deployed API domain.
 
 ## Core Concepts
 
@@ -73,7 +73,7 @@ Endpoints that return festival-level resources (such as `/subfests`, `/news`, an
 - **Header:** Alternatively, provide the festival's active custom domain or subdomain in the `Host` header.
 
 ```bash
-curl -X GET "https://api.festie.app/public-api/v1/teams?subFestSlug=arts-2026" \
+curl -X GET "https://public-api.festie.app/public-api/v1/teams?subFestSlug=arts-2026" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
