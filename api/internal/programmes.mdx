@@ -174,7 +174,7 @@ A few extra tracking fields of the programme are also included.
 ### Example request
 
 ```bash
-curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes?statuses=DRAFT,EVALUATED&hasSchedule=true&sortBy=programCode" \
+curl -X GET "https://public-api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes?statuses=DRAFT,EVALUATED&hasSchedule=true&sortBy=programCode" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -288,7 +288,7 @@ The response is one programme with all the [programme fields](#programme-fields)
 ### Example request
 
 ```bash
-curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101" \
+curl -X GET "https://public-api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -396,7 +396,7 @@ GET /internal-api/v1/subfests/{subFestId}/programmes/{programme}/registrations
 ### Example request
 
 ```bash
-curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101/registrations" \
+curl -X GET "https://public-api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101/registrations" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
