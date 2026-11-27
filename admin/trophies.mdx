@@ -9,18 +9,21 @@ The Trophies page lists programmes with published results. Use it to download tr
 
 - To open the page, you need access to **Trophies**.
 - To download trophies, your role also needs **Download trophies**.
-- To mark trophies printed and save a page layout, your role needs permission to change trophies.
+- To mark trophies downloaded or printed, save a page layout and change trophy settings, your role needs permission to change trophies.
 
 ## The Trophies page
 
-Open **Results** → **Trophies**. The page has four tabs:
+Open **Results** → **Trophies**. The page has five tabs:
 
-- **Overview**: totals for published programmes, trophies, trophies to download, downloaded and printed, plus progress charts.
+- **Overview**: cards for **Published**, **Trophies**, **To download**, **Partial**, **Downloaded** and **Printed**, plus a progress chart and a chart by category.
 - **Published**: programmes with published results that you have not downloaded yet.
-- **Downloaded**: programmes whose trophy sheet you have downloaded.
+- **Partial**: programmes you have downloaded, but some winners did not get a trophy. See [Partially downloaded programmes](#partially-downloaded-programmes).
+- **Downloaded**: programmes whose trophies you have downloaded, with nobody missing.
 - **Printed**: programmes you have marked as printed.
 
-Each tab shows a count. A programme moves to **Downloaded** on its own when its trophy file is ready.
+Each tab except **Overview** shows a count. A programme moves on its own when its trophy file is ready, whether you chose **Single page each** or **Sheet layout**. It moves to **Downloaded**, or to **Partial** if some winners are missing.
+
+At the top right of the page you find the **Trophy settings** button and **Download History**.
 
 ## Download trophies
 
@@ -32,15 +35,33 @@ Each tab shows a count. A programme moves to **Downloaded** on its own when its 
 6. Under **Print as**, choose how to print:
    - **Single page each** (the default): one trophy per page, at the template's own size.
    - **Sheet layout**: several trophies on each printed sheet.
-7. Click the button:
-   - With **Single page each**, click **Download**. The file starts right away.
+7. If you selected a group programme, choose under **Group programmes**:
+   - **Each member** (the default): one trophy for every member of a winning group.
+   - **One per group**: one trophy for each winning group.
+
+   Festie asks this on every download. It does not save your choice.
+8. Click the button:
+   - With **Single page each**, click **Download**. Festie starts preparing the file right away.
    - With **Sheet layout**, click **Next**. In **Page layout**, set how trophies sit on each page (see [Set the page layout](#set-the-page-layout)), then click **Download**. To pick a different template, click **Back**.
 
 Festie prepares the file in the background. When it is ready, download it from your background jobs.
 
 <Tip>
-  You can also download again from the **Downloaded** and **Printed** tabs.
+  You can also download again from the **Partial**, **Downloaded** and **Printed** tabs.
 </Tip>
+
+## Partially downloaded programmes
+
+Your trophy template decides which winners get a trophy page. If its conditions don't cover every winner that **Trophy settings** says should get a trophy, those winners are missing from the file. For example, the template has a condition only for 1st place, but your settings include 1st to 3rd.
+
+When that happens, the programme shows **Partially downloaded**, with the number missing next to it, such as "2 missing". It moves to the **Partial** tab.
+
+To fix it, do one of these:
+
+- **Download the missing trophies.** Select the programmes on the **Partial** tab and click **Download trophies**. Pick a template whose conditions cover the missing winners. The new download adds to what you already have. When nobody is missing, the programme moves to **Downloaded**.
+- **Accept it as done.** Select the programmes and click **Mark downloaded**. The programmes move to **Downloaded**. You need permission to change trophies.
+
+If you change **Trophy settings** or the **Group programmes** choice later, Festie uses the new rule from your next download.
 
 ## Set the page layout
 
@@ -103,7 +124,7 @@ Tick **Save this layout** to use the same layout, including **Mirror**, the next
 
 ## Mark trophies printed
 
-1. Open the **Published** or **Downloaded** tab.
+1. Open the **Published**, **Partial** or **Downloaded** tab.
 2. Select the programmes.
 3. In the bar at the bottom, click **Mark printed**.
 
@@ -112,13 +133,24 @@ The programmes move to **Printed**.
 To undo:
 
 - On the **Printed** tab, click **Mark not printed** to move programmes back to **Downloaded**.
-- On the **Downloaded** or **Printed** tab, click **Mark not downloaded** to move programmes back to **Published**.
+- On the **Partial**, **Downloaded** or **Printed** tab, click **Mark not downloaded** to move programmes back to **Published**. This clears everything, including the missing count.
+
+You need permission to change trophies for all of these.
 
 ## Choose who gets a trophy
 
-1. On the Trophies page, click the settings button next to the title.
+1. On the Trophies page, click the **Trophy settings** button at the top right.
 2. Under **Who gets a trophy**, choose **Position or grade**, **Position only**, **Grade only** or **Everyone**.
 3. If you chose a position option, tick the **Positions** that get a trophy: 1st to 5th.
+   **Save** stays off until you tick at least one position.
 4. Click **Save**.
 
-The trophy counts and the downloaded sheets follow this setting. You need permission to change trophies to see the settings button.
+The trophy counts and the downloaded trophies follow this setting. You need permission to change trophies to see the settings button.
+
+## See past downloads
+
+1. On the Trophies page, click **Download History** at the top right.
+2. Each entry shows the template, when the download finished and how many programmes it included. The newest is first.
+3. Click **View programmes** to see the names and codes of the programmes in that download. Click **Back to history** to return.
+
+If a programme no longer exists, it shows as **Programme unavailable**. Deleting an export also removes it from the history.

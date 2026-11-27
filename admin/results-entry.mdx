@@ -25,43 +25,41 @@ Use this if you want the system to calculate the final positions based on raw sc
 6. Click **Save Changes** and then click **Generate Result**.
 7. Festie will automatically calculate the totals and assign 1st, 2nd, and 3rd positions!
 
-## Edit a candidate's total
+## Enter a total for an online judge
 
-Judges enter scores, and Festie calculates each candidate's total from them. If a total needs a fix, you can type it directly instead of editing judge by judge.
+Use this when a programme uses **Online Judgement** and a judge gave their marks on paper instead of in the judge panel. You type that judge's total for each candidate yourself. Not available for round-based programmes.
 
-**Who can do this:** admins whose role has the **Edit candidate totals** permission. Roles that could already edit scores get it automatically. Judges, teams, stage volunteers and volunteers can't.
+1. Go to **Results** and open the programme.
+2. Open the **Candidate wise** tab.
+3. Click **Edit score**. Only columns of judges who haven't scored online become editable.
+4. In that judge's column, type the total for each candidate.
+5. Click **Save** (or **Save & generate** to also generate the result).
 
-**When it is available:** results are already generated, and the programme uses **Manual Score** or **Online Judgement**. It isn't available for **Manual Result** or round-based programmes.
+Saving a total locks that judge.
 
-1. Go to **Programmes** and open the programme.
-2. Open the **Scores** tab.
-3. Click **Edit totals**. The **Total** column turns into number fields.
-4. Type the new total for each candidate you want to change. It must be between 0 and the out-of value.
-5. Click **Save totals**.
+- **The keyed judge is locked.** They can no longer score this programme in the judge panel.
+- **Other judges keep scoring.** Judges you didn't key in can still score as normal.
+- **Judges who already scored online are view-only.** You can't type over their scores in this table.
+- **The lock stays.** Changing the judgement status (**On**, **Off** or **Schedule**) does not release it.
+- **To release the judge,** remove that judge's scores or unlock the judge.
 
-Festie saves only the totals you changed. If you changed nothing, you see "No totals changed."
+<Note>
+  Once results are generated, judges can't score until the results are removed.
+</Note>
 
-### What happens after you save
+Totals always come from the judges. You can't type a candidate's final total by hand.
 
-- Results regenerate. Position, grade and points are recalculated from the new totals.
-- If the results were published or checked, they are unpublished. Check and publish them again.
-- Edited rows show an **Edited** badge.
-- The programme is hidden from the judge panel.
-- **Edit score** and **Remove scores** are turned off. You see "Totals edited. Revert to edit judge-wise."
+## Revert edited totals
 
-## Revert to judge scores
+Older versions of Festie let admins type a candidate's final total directly. If a programme still has totals edited that way, its rows show an **Edited** badge. Judge-by-judge editing stays off, and you see "Totals edited. Revert to edit judge-wise."
 
-Use this to go back to the totals calculated from the judges' scores.
+**Who can do this:** admins whose role has the **Revert edited totals** permission (Programmes, actions).
 
 1. Open the programme and go to the **Scores** tab.
 2. Click **Revert to judge scores**.
 3. In the confirmation, click **Revert**.
 
-Festie removes the edited totals and regenerates the results from the judge scores. Judges see the programme again, and you can edit judge by judge again.
-
-<Note>
-  If you remove the results, the edited totals are removed too and judge-wise editing is unlocked.
-</Note>
+Festie removes the edited totals and regenerates the results from the judge scores. You can then edit judge by judge again.
 
 ## Mark a programme to review
 
