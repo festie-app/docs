@@ -1,6 +1,6 @@
 ---
 title: "Reports"
-description: "Use reports to review participation, results, curbs, toppers, and exports."
+description: "Use reports to review curbs, results, attendance, judging, registrations, and exports."
 ---
 
 Reports help you audit the festival during and after the event.
@@ -10,20 +10,124 @@ Reports help you audit the festival during and after the event.
 - Relevant setup and event data is entered.
 - Templates exist if you plan to download formatted documents.
 
-Open `Subfest > Reports`.
+## Open reports
 
-Use reports for:
+1. In the sub-fest sidebar, click **Reports**.
+2. Click a report card to open it.
 
-- Curbs and participation limits.
-- Programme results.
-- Candidate points.
-- Toppers.
-- Programme registrations.
-- Programme participation.
-- Topic registrations.
-- Substitutions.
-- Full programme and candidate reports.
-- Exports.
+Use **Search reports** to find a report by name or description. You only see the reports your role can open.
+
+## Available reports
+
+| Report | What it shows |
+| :--- | :--- |
+| **Candidate Curb Report** | Curb usage per candidate against programme rule limits. |
+| **Team Curb Report** | Curb usage per team against programme rule limits. Shown only when teams are turned on. |
+| **Program Result** | Result status, ranks, scores, grades, and points for each programme. |
+| **Candidate Report** | Point totals, published points, and adjustments for each candidate. |
+| **Attendance Report** | Attendance status, checked-in count, absentees, and presentees for each programme. |
+| **Program Judgement Report** | The judges of each programme and whether each one is live, submitted, or verified. |
+| **Judge Judgement Report** | The programmes of each judge and whether each one is live, submitted, or verified. |
+| **Template Exports** | Your template export jobs, with their files, status, and progress. |
+| **Toppers** | Topper rankings for your topper placeholders. |
+| **Program Registrations** | Programme details with the registrations for each programme. |
+| **Team Quota Report** | Entries per team against each programme's minimum and maximum limits, with missing and over-limit teams. When teams are turned off, it shows participation and allowed group limits for each programme. |
+| **Topic Registration** | Registered candidates or groups and the topics they submitted. |
+| **Substitution** | Programmes with substitution requests and their details. |
+| **Program Report** | An all-in-one view of each programme: details, schedule, registrations, and results. |
+
+Report names follow your festival's terminology settings. For example, "Program" may show as your own word for a programme.
+
+## Track judging with the Program Judgement Report
+
+Use this report to see which judges have scored each programme and which scores still need verification.
+
+**Who can use it:** festival owners, and admins whose role can view reports and can also read results or evaluation.
+
+1. Go to **Reports** and click **Program Judgement Report**.
+   You can also press **Ctrl K** and search for "Program Judgement Report".
+2. Find the programme you want. The list shows every programme, in every result status.
+3. Click the row, or its arrow, to expand it. You can expand several rows at once.
+
+Each row shows:
+
+- **Code**: the programme code.
+- **Programme**: the name, category, and type. Click the name to open the programme, if you have access to it.
+- **Judges**: how many judges are assigned.
+- **Result Status**: Draft, Evaluated, Results Generated, Checked To Publish, Checked To Unpublish, or Results Published.
+
+When you expand a row, you see **Judges · X/Y submitted** and a card for each judge. Each card shows the judge's name, a **Chief** or **Substitute** tag if it applies, and when they submitted or were verified. If they have not submitted, you see **Scores saved** or **No scores yet**.
+
+Each judge has one status:
+
+| Status | Meaning |
+| :--- | :--- |
+| **Live** | The judge can score now. |
+| **Submitted** | The judge sent their scores. |
+| **Verified** | An admin approved the judge's submission. |
+| **Pending** | Judgement is closed and the judge has not submitted. |
+| **Locked** | Judgement is open, but an admin locked the judge. |
+
+### Narrow the list
+
+- **Views:** **All Programmes**, **With Judges**, **No Judges**, or **Pending Verification** (programmes with submitted scores still waiting for verification). Switching views keeps your other filters.
+- **Filters:**
+  - **Result Status**, **Judges**, **Category**, and **Program Type**.
+  - **Judgement Type**: **Manual Result**, **Manual Score**, or **Online Judgement**.
+  - **Venues**.
+  - **Has Judges**, **Pending Verification**, **Is Scored**, **Has Results**, **Has Schedule**, and **Has Registrations**.
+  - One filter for each sub-category set and each collection key.
+- **Search:** type a programme code or name.
+- **Sort:** by code or name.
+
+On a phone, each programme shows as a card. Tap a card to expand it.
+
+<Note>
+  This report has no export.
+</Note>
+
+## Track judging with the Judge Judgement Report
+
+Use this report to see, judge by judge, which programmes each judge has scored and what still needs attention.
+
+**Who can use it:** festival owners, and admins whose role can view reports and can also read results or evaluation.
+
+1. Go to **Reports** and click **Judge Judgement Report**.
+   You can also press **Ctrl K** and search for "Judge Judgement Report".
+2. Find the judge you want. The list shows every judge of the sub-fest, including judges with no programmes.
+3. Click the row, or its arrow, to open it.
+
+Each row shows:
+
+- **Judge**: the judge's name and email.
+- **Programmes**: how many programmes the judge is assigned to.
+- **Live**, **Pending**, **Submitted**, and **Verified**: how many of the judge's programmes have each status. **Pending** includes locked programmes.
+
+When you open a row, you see **Programmes · X/Y submitted** and a card for each programme. Each card shows:
+
+- The programme code and name. Click the name to open the programme, if you have access to it.
+- A **Chief** or **Substitute** tag if it applies.
+- The programme's result status.
+- When the judge submitted or was verified. If they have not submitted, you see **Scores saved** or **No scores yet**.
+- The judge's status for that programme: **Live**, **Submitted**, **Verified**, **Pending**, or **Locked**. These mean the same as in the Program Judgement Report.
+
+### Narrow the list
+
+- **Views:**
+  - **All Judges**.
+  - **Live**: judges with programmes they can score now.
+  - **Not Submitted**: judges with programmes that are live, pending, or locked.
+  - **Awaiting Verification**: judges with submitted scores not yet verified.
+  - **No Programmes**: judges with no programmes assigned.
+- **Filters:** **Judge Status**, **Result Status**, **Category**, **Program Type**, and **Has Programmes**. Programme filters limit which programmes count for each judge. Judges left with no matching programmes are hidden.
+- **Search:** type a judge's name or email, or a programme code or name.
+- **Sort:** by **Judge**, **Programmes**, or **Not Submitted**.
+
+On a phone, each judge shows as a card with their counts. Tap a card to open it.
+
+<Note>
+  This report has no export.
+</Note>
 
 <Tip>
   Reports become more useful after candidates, programmes, registrations, schedules, and results are entered.
