@@ -1,0 +1,485 @@
+---
+title: "Candidates"
+description: "Read the candidates of a subfest, including drafts and unpublished data, with the Internal API."
+---
+
+Use these endpoints to read the candidates of a subfest. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints include drafts and unpublished data.
+
+<Warning>
+  **Candidate responses include personal details.** They include email, phone numbers and date of birth. Store your key securely and keep this data on your backend server.
+</Warning>
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests).
+
+## Filters and sorting
+
+List filters accept comma-separated values or repeated parameters. For example, `?search=a,b` works the same as `?search=a&search=b`. Boolean filters use `true` or `false`.
+
+---
+
+## List candidates
+
+Returns the candidates of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/candidates
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `search` | `string` | — | Search by name, chest number or admission number. |
+| `categoryIds` | `UUID` | — | Show only candidates in these categories. |
+| `includeUnassignedCategory` | `boolean` | — | Also show candidates with no category. |
+| `teamIds` | `UUID` | — | Show only candidates in these teams. |
+| `includeUnassignedTeam` | `boolean` | — | Also show candidates with no team. |
+| `sectionIds` | `UUID` | — | Show only candidates in these sections. |
+| `gender` | `string` | — | Show only this gender: `MALE`, `FEMALE` or `OTHER`. |
+| `chestNoPattern` | `string` | — | Show candidates whose chest number contains this text. Not case sensitive. |
+| `admNoPattern` | `string` | — | Show candidates whose admission number contains this text. Not case sensitive. |
+| `hasAvatar` | `boolean` | — | `true` shows candidates with an avatar. `false` shows candidates without. |
+| `hasRegistration` | `boolean` | — | `true` shows candidates with a registration. `false` shows candidates without. |
+| `sortBy` | `string` | `chestNo` | Sort field: `chestNo`, `name`, `email`, `admNo`, `teamName`, `categoryName` or `createdAt`. |
+| `sortOrder` | `string` | `asc` | Sort direction: `asc` or `desc`. |
+
+### Candidate fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The subfest candidate ID. |
+| `subFestId` | The ID of the subfest. |
+| `candidateId` | The ID of the candidate profile. |
+| `categoryId` | The ID of the category, or `null`. |
+| `teamId` | The ID of the team, or `null`. |
+| `isActive` | `true` if the candidate is active. |
+| `createdAt` | When the record was created. |
+| `updatedAt` | When the record was last updated. |
+| `candidate` | The candidate profile. See the table below. |
+| `category` | The category, with `id` and `name`. `null` if there is none. |
+| `team` | The team, with `id`, `name`, `displayName`, `colorCode` and `logoUrl`. `null` if there is none. |
+| `sections` | The sections of the candidate. Each section has `id`, `key` and `value`. |
+
+### Candidate profile fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The candidate profile ID. |
+| `festivalId` | The festival ID. |
+| `chestNo` | The chest number. |
+| `name` | The candidate name. |
+| `email` | The candidate email. |
+| `dob` | The date of birth. |
+| `whatsappNumber` | The WhatsApp number. |
+| `parentWhatsappNumber` | The parent's WhatsApp number. |
+| `avatar` | The full URL of the avatar image, or `null`. |
+| `avatarFileId` | The avatar file ID. |
+| `gender` | The gender. |
+| `admNo` | The admission number. |
+| `additionalInfo` | Extra information about the candidate. |
+| `createdAt` | When the profile was created. |
+| `updatedAt` | When the profile was last updated. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/candidates?teamIds=3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f&sortBy=name" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "candidateId": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+      "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+      "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "isActive": true,
+      "createdAt": "2026-01-20T10:00:00.000Z",
+      "updatedAt": "2026-02-02T08:15:00.000Z",
+      "candidate": {
+        "id": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+        "festivalId": "db0e7419-8d01-4481-83c9-d997cc481a9c",
+        "chestNo": "101",
+        "name": "Demo Candidate",
+        "email": "candidate@example.com",
+        "dob": "2010-05-14T00:00:00.000Z",
+        "whatsappNumber": "+910000000001",
+        "parentWhatsappNumber": "+910000000002",
+        "avatar": "https://example.com/avatars/demo.jpg",
+        "avatarFileId": "a4b5c6d7-e8f9-4a0b-9c1d-2e3f4a5b6c7d",
+        "gender": "FEMALE",
+        "admNo": "ADM-0001",
+        "additionalInfo": null,
+        "createdAt": "2026-01-20T10:00:00.000Z",
+        "updatedAt": "2026-02-02T08:15:00.000Z"
+      },
+      "category": {
+        "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+        "name": "Junior"
+      },
+      "team": {
+        "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+        "name": "Team Falcon",
+        "displayName": "Falcons",
+        "colorCode": "#E4572E",
+        "logoUrl": "https://example.com/logos/falcon.png"
+      },
+      "sections": [
+        {
+          "id": "c9d0e1f2-a3b4-4c5d-8e6f-7a8b9c0d1e2f",
+          "key": "Class",
+          "value": "8"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or a filter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get a candidate
+
+Returns one candidate of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/candidates/{candidate}
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `candidate` | `string` | The subfest candidate ID or the chest number. |
+
+### Response fields
+
+The response has all the [candidate fields](#candidate-fields) and this extra field:
+
+| Field | Description |
+| :--- | :--- |
+| `hasRegistrations` | `true` if the candidate is registered in any programme. |
+
+<Note>
+  For programmes, results, points and gallery images, use [Get a candidate profile](#get-a-candidate-profile).
+</Note>
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/candidates/101" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "id": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+  "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+  "candidateId": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+  "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+  "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+  "isActive": true,
+  "createdAt": "2026-01-20T10:00:00.000Z",
+  "updatedAt": "2026-02-02T08:15:00.000Z",
+  "candidate": {
+    "id": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+    "festivalId": "db0e7419-8d01-4481-83c9-d997cc481a9c",
+    "chestNo": "101",
+    "name": "Demo Candidate",
+    "email": "candidate@example.com",
+    "dob": "2010-05-14T00:00:00.000Z",
+    "whatsappNumber": "+910000000001",
+    "parentWhatsappNumber": "+910000000002",
+    "avatar": "https://example.com/avatars/demo.jpg",
+    "avatarFileId": "a4b5c6d7-e8f9-4a0b-9c1d-2e3f4a5b6c7d",
+    "gender": "FEMALE",
+    "admNo": "ADM-0001",
+    "additionalInfo": null,
+    "createdAt": "2026-01-20T10:00:00.000Z",
+    "updatedAt": "2026-02-02T08:15:00.000Z"
+  },
+  "category": {
+    "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+    "name": "Junior"
+  },
+  "team": {
+    "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+    "name": "Team Falcon",
+    "displayName": "Falcons",
+    "colorCode": "#E4572E",
+    "logoUrl": "https://example.com/logos/falcon.png"
+  },
+  "sections": [
+    {
+      "id": "c9d0e1f2-a3b4-4c5d-8e6f-7a8b9c0d1e2f",
+      "key": "Class",
+      "value": "8"
+    }
+  ],
+  "hasRegistrations": true
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or candidate is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the candidate does not exist. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get a candidate profile
+
+Returns the full profile of one candidate: the candidate details, programmes, points and gallery images. This endpoint has no pagination.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/candidates/{chestNo}/profile
+```
+
+<Warning>
+  **Unpublished results are included.** Programme results that are not published yet are returned too. Use `isPublished` to tell them apart. Do not show unpublished results to the public.
+</Warning>
+
+<Warning>
+  **The profile includes personal details.** It includes email, phone numbers and date of birth. Store your key securely and keep this data on your backend server.
+</Warning>
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `chestNo` | `string` | The chest number of the candidate. Not case sensitive. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `candidate` | The candidate. It has the same fields as in the other candidate endpoints. See [Candidate fields](#candidate-fields) and [Candidate profile fields](#candidate-profile-fields). |
+| `programs` | The programmes the candidate is registered in, newest registration first. See [Programme fields](#programme-fields). |
+| `pointSummary` | The points of the candidate. `null` if the candidate has no points yet. See [Point summary fields](#point-summary-fields). |
+| `pointAdjustments` | The latest 100 point adjustments that are approved or rejected. Pending adjustments are not included. See [Point adjustment fields](#point-adjustment-fields). |
+| `galleryImages` | Up to 60 gallery images of the candidate. See [Gallery image fields](#gallery-image-fields). |
+
+#### Programme fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The registration ID. |
+| `subFestProgramId` | The subfest programme ID. |
+| `programName` | The programme name. |
+| `programCode` | The programme code. |
+| `programType` | The programme type: `INDIVIDUAL`, `GROUP` or `TEAM`. |
+| `categoryName` | The category name. |
+| `registrationId` | The registration ID. |
+| `registrationType` | `Single` or `Group`. |
+| `topic` | The topic of the entry. |
+| `checkedIn` | `true` if the candidate is checked in. |
+| `registeredAt` | When the candidate was registered. |
+| `result` | The result of the entry, or `null` if there is none. See the table below. |
+| `programStatus` | The result status of the programme. |
+| `groupName` | The group name. Group entries only. |
+| `groupMembers` | The members of the group. Group entries only. Each member has `subFestCandidateId` and `name`. |
+
+The `result` object has these fields:
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The result ID. |
+| `position` | The position. |
+| `grade` | The grade. |
+| `totalPoints` | The total points. |
+| `isPublished` | `false` if the result is not published yet. |
+
+#### Point summary fields
+
+| Field | Description |
+| :--- | :--- |
+| `totalPoints` | The total points. |
+| `publishedPoints` | The points from published results. |
+| `totalPointAdjustments` | The total of the point adjustments. |
+| `totalPrograms` | The number of programmes. |
+| `publishedPrograms` | The number of programmes with published results. |
+| `percentage` | The percentage. |
+
+#### Point adjustment fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The adjustment ID. |
+| `type` | The type of adjustment: `BONUS` or `NEGATIVE`. |
+| `points` | The points added or removed. |
+| `reason` | The reason. |
+| `remarks` | Extra remarks. |
+| `revokedAt` | When the adjustment was revoked, or `null`. |
+| `createdAt` | When the adjustment was created. |
+
+#### Gallery image fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The image ID. |
+| `albumId` | The album ID. |
+| `title` | The image title. |
+| `description` | The image description. |
+| `imageUrl` | The URL of the image. |
+| `thumbnailUrl` | The URL of the thumbnail. |
+| `orderIndex` | The position of the image in the album. |
+| `createdAt` | When the image was added. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/candidates/101/profile" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "candidate": {
+    "id": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+    "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+    "candidateId": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+    "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+    "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+    "isActive": true,
+    "createdAt": "2026-01-20T10:00:00.000Z",
+    "updatedAt": "2026-02-02T08:15:00.000Z",
+    "candidate": {
+      "id": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+      "festivalId": "db0e7419-8d01-4481-83c9-d997cc481a9c",
+      "chestNo": "101",
+      "name": "Demo Candidate",
+      "email": "candidate@example.com",
+      "dob": "2010-05-14T00:00:00.000Z",
+      "whatsappNumber": "+910000000001",
+      "parentWhatsappNumber": "+910000000002",
+      "avatar": "https://example.com/avatars/demo.jpg",
+      "avatarFileId": "a4b5c6d7-e8f9-4a0b-9c1d-2e3f4a5b6c7d",
+      "gender": "FEMALE",
+      "admNo": "ADM-0001",
+      "additionalInfo": null,
+      "createdAt": "2026-01-20T10:00:00.000Z",
+      "updatedAt": "2026-02-02T08:15:00.000Z"
+    },
+    "category": {
+      "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+      "name": "Junior"
+    },
+    "team": {
+      "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "name": "Team Falcon",
+      "displayName": "Falcons",
+      "colorCode": "#E4572E",
+      "logoUrl": "https://example.com/logos/falcon.png"
+    },
+    "sections": [
+      {
+        "id": "c9d0e1f2-a3b4-4c5d-8e6f-7a8b9c0d1e2f",
+        "key": "Class",
+        "value": "8"
+      }
+    ]
+  },
+  "programs": [
+    {
+      "id": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "subFestProgramId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+      "programName": "Demo Speech",
+      "programCode": "J-101",
+      "programType": "INDIVIDUAL",
+      "categoryName": "Junior",
+      "registrationId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "registrationType": "Single",
+      "topic": "My favourite place",
+      "checkedIn": true,
+      "registeredAt": "2026-02-01T09:00:00.000Z",
+      "result": {
+        "id": "b1c2d3e4-f5a6-4b78-8c9d-0e1f2a3b4c5d",
+        "position": 1,
+        "grade": "A",
+        "totalPoints": "10.00",
+        "isPublished": false
+      },
+      "programStatus": "EVALUATED"
+    }
+  ],
+  "pointSummary": {
+    "totalPoints": "10.00",
+    "publishedPoints": "0.00",
+    "totalPointAdjustments": "0.00",
+    "totalPrograms": 1,
+    "publishedPrograms": 0,
+    "percentage": 0
+  },
+  "pointAdjustments": [
+    {
+      "id": "d6e7f8a9-b0c1-4d2e-8f3a-4b5c6d7e8f90",
+      "type": "BONUS",
+      "points": "2.00",
+      "reason": "Demo reason",
+      "remarks": null,
+      "revokedAt": null,
+      "createdAt": "2026-03-01T12:00:00.000Z"
+    }
+  ],
+  "galleryImages": [
+    {
+      "id": "f7a8b9c0-d1e2-4f3a-8b4c-5d6e7f8a9b01",
+      "albumId": "a8b9c0d1-e2f3-4a4b-8c5d-6e7f8a9b0c12",
+      "title": "Demo photo",
+      "description": null,
+      "imageUrl": "https://example.com/gallery/demo.jpg",
+      "thumbnailUrl": "https://example.com/gallery/demo-thumb.jpg",
+      "orderIndex": 0,
+      "createdAt": "2026-03-02T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the candidate does not exist. |
+| `429` | You went over the rate limit. |

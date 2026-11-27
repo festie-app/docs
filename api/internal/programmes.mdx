@@ -1,0 +1,502 @@
+---
+title: "Programmes"
+description: "Read the programmes of a subfest and their registrations, including drafts and unpublished data, with the Internal API."
+---
+
+Use these endpoints to read the programmes of a subfest and the registrations of each programme. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints include drafts and unpublished data.
+
+<Warning>
+  **Registration responses include personal details.** The person who marked attendance is returned with their email. Store your key securely and keep this data on your backend server.
+</Warning>
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests).
+
+## Filters and sorting
+
+List filters accept comma-separated values or repeated parameters. For example, `?statuses=DRAFT,EVALUATED` works the same as `?statuses=DRAFT&statuses=EVALUATED`. Boolean filters use `true` or `false`.
+
+<Note>
+  **Not included yet.** These are not available in the REST API yet:
+
+  - The subfest's inherited (effective) judging settings.
+  - The effective substitution rules and substitution window times.
+  - The filters `scheduleStatus`, `templateGeneration` and `queueOrder`.
+</Note>
+
+---
+
+## List programmes
+
+Returns the programmes of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/programmes
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `search` | `string` | — | Search by programme name, code, concept note or category name. |
+| `categoryIds` | `UUID` | — | Show only programmes in these categories. |
+| `venues` | `UUID` | — | Show only programmes scheduled at these venues. Use venue IDs. |
+| `statuses` | `string` | — | Show only programmes with these result statuses: `DRAFT`, `EVALUATED`, `RESULTS_GENERATED`, `CHECKED_TO_PUBLISH`, `CHECKED_TO_UNPUBLISH` or `RESULTS_PUBLISHED`. |
+| `programType` | `string` | — | Show only this programme type: `INDIVIDUAL`, `GROUP` or `TEAM`. |
+| `programCodePattern` | `string` | — | Show programmes whose code contains this text. Not case sensitive. |
+| `collectionIds` | `UUID` | — | Show only programmes in these collections. |
+| `judges` | `UUID` | — | Show only programmes with these judges. Use judge IDs. A judge of any round counts. |
+| `hasSchedule` | `boolean` | — | `true` shows programmes with a schedule. `false` shows programmes without. |
+| `hasResults` | `boolean` | — | `true` shows programmes with results. `false` shows programmes without. |
+| `hasJudges` | `boolean` | — | `true` shows programmes with judges. `false` shows programmes without. |
+| `hasRegistrations` | `boolean` | — | `true` shows programmes with registrations. `false` shows programmes without. |
+| `candidateRegistrationOpen` | `boolean` | — | `true` shows programmes where candidate registration is open. `false` shows programmes where it is not. |
+| `topicRegistrationOpen` | `boolean` | — | `true` shows programmes where topic registration is open. `false` shows programmes where it is not. |
+| `requiresTopicRegistration` | `boolean` | — | `true` shows programmes that need a topic. `false` shows programmes that do not. |
+| `sortBy` | `string` | category order, then programme code | Sort field: `programCode`, `programName`, `categoryName`, `createdAt`, `updatedAt`, `publishedAt` or `resultStatus`. |
+| `sortOrder` | `string` | `asc` | Sort direction: `asc` or `desc`. |
+
+### Programme fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The subfest programme ID. |
+| `subFestId` | The ID of the subfest. |
+| `programId` | The ID of the programme. |
+| `categoryId` | The ID of the category, or `null`. |
+| `publishedAt` | When the results were published, or `null`. |
+| `resultStatus` | The result status: `DRAFT`, `EVALUATED`, `RESULTS_GENERATED`, `CHECKED_TO_PUBLISH`, `CHECKED_TO_UNPUBLISH` or `RESULTS_PUBLISHED`. |
+| `createdAt` | When the record was created. |
+| `updatedAt` | When the record was last updated. |
+| `program` | The programme. It has `id`, `name`, `code`, `conceptNote` and `programType` (`INDIVIDUAL`, `GROUP` or `TEAM`). |
+| `category` | The category, with `id` and `name`. `null` if there is none. |
+| `programCollections` | The collections of the programme. Each item has `id` and `collection` (`id`, `key` and `value`). |
+| `programSkills` | The skills of the programme. Each item has `id` and `skill` (`id` and `name`). |
+| `schedule` | The first schedule slot, or `null`. See [Schedule fields](#schedule-fields). |
+| `schedules` | All schedule slots of the programme. |
+| `registrationCount` | The number of registrations. Single registrations for `INDIVIDUAL` programmes. Group registrations for `GROUP` and `TEAM` programmes. |
+| `programRegistrationCount` | The number of single registrations. |
+| `groupRegistrationCount` | The number of group registrations. |
+| `scheduleCount` | The number of schedule slots. |
+| `judgeCount` | The number of judges. |
+| `resultCount` | The number of results. |
+| `hasSchedule` | `true` if the programme has a schedule. |
+| `hasJudges` | `true` if the programme has judges. |
+| `hasResults` | `true` if the programme has results. |
+| `hasRegistrations` | `true` if the programme has registrations. |
+
+**Who can take part**
+
+| Field | Description |
+| :--- | :--- |
+| `allowedTeamIds` | The IDs of the teams that can take part. |
+| `allowedCategoryIds` | The IDs of the categories that can take part. |
+| `allowedSectionIds` | The IDs of the sections that can take part. |
+| `minParticipantsPerTeam` | The minimum number of participants per team. |
+| `maxParticipantsPerTeam` | The maximum number of participants per team. |
+| `minGroupsPerTeam` | The minimum number of groups per team. |
+| `maxGroupsPerTeam` | The maximum number of groups per team. |
+| `minParticipantsInGroup` | The minimum number of participants in a group. |
+| `maxParticipantsInGroup` | The maximum number of participants in a group. |
+
+**Judging and results**
+
+| Field | Description |
+| :--- | :--- |
+| `judgmentType` | The judgment type of the programme. |
+| `customJudgmentSettings` | The programme's own judging settings. |
+| `pointPercentages` | The point percentages. |
+| `enableGrading` | `true` if grading is on. |
+| `enablePosition` | `true` if positions are on. |
+| `gradeCriteriaId` | The ID of the grade criteria. |
+| `positionCriteriaId` | The ID of the position criteria. |
+| `judgementCriteriaId` | The ID of the judgement criteria. |
+
+**Registration**
+
+| Field | Description |
+| :--- | :--- |
+| `candidateRegistrationMode` | `CLOSED`, `OPEN` or `SCHEDULED`. |
+| `candidateRegistrationStatus` | `CLOSED`, `OPEN` or `SCHEDULED`. |
+| `candidateRegistrationStart` and `candidateRegistrationEnd` | The start and end dates of candidate registration. |
+| `candidateRegistrationOpen` | `true` if candidate registration is open. |
+| `topicRegistrationMode` | `CLOSED`, `OPEN` or `SCHEDULED`. |
+| `topicRegistrationStatus` | `CLOSED`, `OPEN` or `SCHEDULED`. |
+| `topicRegistrationStart` and `topicRegistrationEnd` | The start and end dates of topic registration. |
+| `topicRegistrationOpen` | `true` if topic registration is open. |
+| `requiresTopicRegistration` | `true` if participants must register a topic. |
+| `allowSubstitution` | `true`, `false` or `null`. `null` means the programme follows the subfest default. |
+| `substitutionAllowBeforeMinutes` | How many minutes before the programme substitution is allowed. |
+| `fallbackSubstitutionCloseTime` | The fallback time when substitution closes. |
+
+**Timing and rounds**
+
+| Field | Description |
+| :--- | :--- |
+| `roundType` | `NONE`, `ELIMINATION` or `CUMULATIVE`. |
+| `durationType` | The duration type. |
+| `durationMode` | `OVERALL` or `PER_PARTICIPANT`. |
+| `durationMinutes` | The duration in minutes. |
+| `warningMinutes` | The warning time, minutes part. |
+| `warningSeconds` | The warning time, seconds part. |
+| `rounds` | The rounds of the programme. See [Round fields](#round-fields). |
+
+A few extra tracking fields of the programme are also included.
+
+#### Schedule fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The schedule slot ID. |
+| `scheduledAt` | When the slot starts. |
+| `durationMinutes` | The length of the slot in minutes. |
+| `venueId` | The ID of the venue. |
+| `roundId` | The ID of the round, or `null`. |
+| `venue` | The venue, with `id` and `name`. |
+
+#### Round fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The round ID. |
+| `name` | The round name. |
+| `orderIndex` | The order of the round. |
+| `durationMode` | `OVERALL` or `PER_PARTICIPANT`. |
+| `durationMinutes` | The duration in minutes. |
+| `judgmentType` | The judgment type of the round. |
+| `customJudgmentSettings` | The judging settings of the round. |
+| `judgementCriteriaId` | The ID of the judgement criteria. |
+| `resultStatus` | The result status of the round. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes?statuses=DRAFT,EVALUATED&hasSchedule=true&sortBy=programCode" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+More fields are returned. This example is shortened.
+
+```json
+{
+  "data": [
+    {
+      "id": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "programId": "f0e1d2c3-b4a5-4968-8776-5a4b3c2d1e0f",
+      "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+      "publishedAt": null,
+      "resultStatus": "DRAFT",
+      "createdAt": "2026-01-20T10:00:00.000Z",
+      "updatedAt": "2026-02-02T08:15:00.000Z",
+      "program": {
+        "id": "f0e1d2c3-b4a5-4968-8776-5a4b3c2d1e0f",
+        "name": "Demo Recitation",
+        "code": "J-101",
+        "conceptNote": "A short demo note.",
+        "programType": "INDIVIDUAL"
+      },
+      "category": {
+        "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+        "name": "Junior"
+      },
+      "programCollections": [],
+      "programSkills": [],
+      "schedule": {
+        "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c",
+        "scheduledAt": "2026-03-10T09:00:00.000Z",
+        "durationMinutes": 10,
+        "venueId": "c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f",
+        "roundId": null,
+        "venue": {
+          "id": "c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f",
+          "name": "Main Stage"
+        }
+      },
+      "schedules": [],
+      "registrationCount": 12,
+      "programRegistrationCount": 12,
+      "groupRegistrationCount": 0,
+      "scheduleCount": 1,
+      "judgeCount": 3,
+      "resultCount": 0,
+      "hasSchedule": true,
+      "hasJudges": true,
+      "hasResults": false,
+      "hasRegistrations": true,
+      "allowedTeamIds": [],
+      "allowedCategoryIds": [],
+      "allowedSectionIds": [],
+      "candidateRegistrationMode": "OPEN",
+      "candidateRegistrationOpen": true,
+      "topicRegistrationOpen": false,
+      "requiresTopicRegistration": false,
+      "allowSubstitution": null,
+      "roundType": "NONE",
+      "durationMode": "PER_PARTICIPANT",
+      "durationMinutes": 5,
+      "rounds": []
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or a filter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get a programme
+
+Returns one programme of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/programmes/{programme}
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `programme` | `string` | The subfest programme ID or the programme code. |
+
+### Response fields
+
+The response is one programme with all the [programme fields](#programme-fields).
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+The response has the same shape as one item in the list. See the example above.
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or programme is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the programme does not exist. |
+| `429` | You went over the rate limit. |
+
+---
+
+## List programme registrations
+
+Returns all registrations of one programme. This endpoint has no pagination. It returns every registration.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/programmes/{programme}/registrations
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `programme` | `string` | The subfest programme ID or the programme code. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `programType` | The programme type: `INDIVIDUAL`, `GROUP` or `TEAM`. |
+| `eligibleTeamCount` | The number of teams that can take part. If no teams are restricted, this is the number of all teams in the subfest. |
+| `singleRegistrations` | The single registrations. See [Single registration fields](#single-registration-fields). |
+| `groupRegistrations` | The group registrations. See [Group registration fields](#group-registration-fields). |
+
+<Warning>
+  **Attendance marker details are personal data.** `attendanceMarker` includes the email of the person who marked attendance. Handle it with care.
+</Warning>
+
+#### Single registration fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The registration ID. |
+| `subFestProgramId` | The subfest programme ID. |
+| `subFestCandidateId` | The subfest candidate ID. |
+| `teamId` | The team ID. |
+| `topic` | The topic. |
+| `topicDetails` | More details about the topic. |
+| `topicStatus` | The topic approval status. |
+| `topicRemarks` | Remarks about the topic. |
+| `topicSubmitted` | `true` if the topic was submitted. |
+| `topicApprovedAt` | When the topic was approved. |
+| `checkedIn` | `true` if the candidate checked in. |
+| `checkedInAt` | When the candidate checked in. |
+| `checkedInBy` | The ID of the person who checked the candidate in. |
+| `attendanceMarker` | The person who marked attendance, with `id`, `fullName` and `email`. `null` if there is none. |
+| `codeLetter` | The code letter. |
+| `registeredAt` | When the candidate registered. |
+| `subFestCandidate` | The candidate. See [Registered candidate fields](#registered-candidate-fields). |
+| `team` | The team, with `id`, `name`, `displayName`, `colorCode` and `logoUrl`. `null` if there is none. |
+
+#### Group registration fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The registration ID. |
+| `subFestProgramId` | The subfest programme ID. |
+| `teamId` | The team ID. |
+| `groupName` | The group name. |
+| `topic` | The topic. |
+| `topicDetails` | More details about the topic. |
+| `topicStatus` | The topic approval status. |
+| `topicRemarks` | Remarks about the topic. |
+| `topicApprovedAt` | When the topic was approved. |
+| `topicLastUpdated` | When the topic was last updated. |
+| `checkedIn` | `true` if the group checked in. |
+| `checkedInAt` | When the group checked in. |
+| `checkedInBy` | The ID of the person who checked the group in. |
+| `attendanceMarker` | The person who marked attendance, with `id`, `fullName` and `email`. `null` if there is none. |
+| `codeLetter` | The code letter. |
+| `createdAt` | When the registration was created. |
+| `team` | The team, with `id`, `name`, `displayName`, `colorCode` and `logoUrl`. `null` if there is none. |
+| `members` | The members of the group. Each member has `id`, `checkedIn`, `checkedInAt`, `subFestCandidateId` and `subFestCandidate`. |
+
+#### Registered candidate fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The subfest candidate ID. |
+| `teamId` | The team ID. |
+| `categoryId` | The category ID. |
+| `category` | The category, with `id` and `name`. |
+| `candidate` | The candidate, with `id`, `name`, `chestNo`, `admNo`, `avatar` and `gender`. |
+| `sections` | The sections of the candidate. Each section has `id`, `key` and `value`. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101/registrations" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "programType": "INDIVIDUAL",
+  "eligibleTeamCount": 4,
+  "singleRegistrations": [
+    {
+      "id": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "subFestProgramId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+      "subFestCandidateId": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+      "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "topic": null,
+      "topicDetails": null,
+      "topicStatus": "PENDING",
+      "topicRemarks": null,
+      "topicSubmitted": false,
+      "topicApprovedAt": null,
+      "checkedIn": true,
+      "checkedInAt": "2026-03-10T08:45:00.000Z",
+      "checkedInBy": "a9b8c7d6-e5f4-4a3b-8c2d-1e0f9a8b7c6d",
+      "attendanceMarker": {
+        "id": "a9b8c7d6-e5f4-4a3b-8c2d-1e0f9a8b7c6d",
+        "fullName": "Demo Volunteer",
+        "email": "volunteer@example.com"
+      },
+      "codeLetter": "A",
+      "registeredAt": "2026-02-15T12:00:00.000Z",
+      "subFestCandidate": {
+        "id": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+        "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+        "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+        "category": {
+          "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+          "name": "Junior"
+        },
+        "candidate": {
+          "id": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+          "name": "Demo Candidate",
+          "chestNo": "101",
+          "admNo": "ADM-0001",
+          "avatar": "https://example.com/avatars/demo.jpg",
+          "gender": "FEMALE"
+        },
+        "sections": [
+          {
+            "id": "c9d0e1f2-a3b4-4c5d-8e6f-7a8b9c0d1e2f",
+            "key": "Class",
+            "value": "8"
+          }
+        ]
+      },
+      "team": {
+        "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+        "name": "Team Falcon",
+        "displayName": "Falcons",
+        "colorCode": "#E4572E",
+        "logoUrl": "https://example.com/logos/falcon.png"
+      }
+    }
+  ],
+  "groupRegistrations": []
+}
+```
+
+For a `GROUP` or `TEAM` programme, `groupRegistrations` has items and each one lists its `members`. A member looks like this:
+
+```json
+{
+  "id": "f1a2b3c4-d5e6-4f70-8a9b-0c1d2e3f4a5b",
+  "checkedIn": false,
+  "checkedInAt": null,
+  "subFestCandidateId": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+  "subFestCandidate": {
+    "id": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+    "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+    "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+    "category": { "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70", "name": "Junior" },
+    "candidate": {
+      "id": "e1f2a3b4-c5d6-4e78-9a0b-1c2d3e4f5a6b",
+      "name": "Demo Candidate",
+      "chestNo": "101",
+      "admNo": "ADM-0001",
+      "avatar": null,
+      "gender": "FEMALE"
+    },
+    "sections": []
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or programme is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the programme does not exist. |
+| `429` | You went over the rate limit. |

@@ -16,8 +16,8 @@ To generate an API key for your festival:
   <Step title="Verify Subscription Feature">
     Ensure your festival's plan includes the **Developer API** feature. If needed, upgrade to an eligible plan in **Billing**.
   </Step>
-  <Step title="Create API Key">
-    Enter a recognizable name for the key (e.g. `Stage-LED-Display` or `Mobile-App-Client`). Optionally choose an expiration date and time, then click **Create**.
+  <Step title="Generate the key">
+    Enter a recognizable name for the key (e.g. `Stage-LED-Display` or `Mobile-App-Client`). Optionally choose an expiration date and time, then click **Generate Key**. Keys made here return published data only. To read unpublished data, see the [Internal API](/api/internal/authentication).
   </Step>
   <Step title="Copy and Store Key Securely">
     Your raw API key will be displayed once. Copy and save it in your environment variables or secret manager.
@@ -130,7 +130,7 @@ print(data["data"])
 Festie protects API availability with a dual-layer quota mechanism:
 
 ### 1. Per-Minute Rate Limit
-Each key is allocated a per-minute rate limit (defaults to `60` requests per minute, or as configured in your festival key settings). If exceeded within a 60-second sliding window, the API responds with:
+Each key is allocated a per-minute rate limit (defaults to `120` requests per minute, or as configured in your festival key settings). If exceeded within a 60-second sliding window, the API responds with:
 
 ```json
 {

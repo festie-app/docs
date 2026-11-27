@@ -1,0 +1,61 @@
+---
+title: "Internal API authentication"
+description: "Create an API key with internal access and use it to call the Festie Internal REST API."
+---
+
+The Internal API uses the same `X-API-Key` header as the public API. It only accepts keys that have internal access.
+
+## Create a key with internal access
+
+Only the festival owner can create API keys.
+
+<Steps>
+  <Step title="Open API keys">
+    In the Festie admin app, go to **Festival settings** and open **API keys**.
+  </Step>
+  <Step title="Name the key">
+    Enter a name you will recognize, for example `Reporting-Server`. You can also choose an expiry date and time.
+  </Step>
+  <Step title="Turn on internal access">
+    Switch on **Internal access (unpublished data)**.
+  </Step>
+  <Step title="Generate the key">
+    Click **Generate Key**.
+  </Step>
+  <Step title="Copy the key">
+    Copy the key and store it in your server's secret storage.
+  </Step>
+</Steps>
+
+<Warning>
+  Festie shows the key only once. If you lose it, revoke it and generate a new one.
+</Warning>
+
+Keys you created before this option existed work with the public API only. To use the Internal API, generate a new key with **Internal access (unpublished data)** turned on.
+
+<Warning>
+  Internal keys can read drafts and unpublished data. Keep them on your backend server. Never use them in browser or website code.
+</Warning>
+
+## Send the key
+
+Add the key to the `X-API-Key` header of every request:
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/festival" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Accept: application/json"
+```
+
+## Rate limit
+
+Each key can make 120 requests per minute by default. If you go over the limit, the API returns a `429` error. Wait a moment, then try again.
+
+## Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `401` | The `X-API-Key` header is missing, or the key is invalid or expired. |
+| `403` | The key does not have internal access. The message is `API key does not have the INTERNAL scope.` |
+| `404` | The sub-fest belongs to a different festival. |
+| `429` | You went over the rate limit. |

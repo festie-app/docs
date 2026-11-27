@@ -1,0 +1,306 @@
+---
+title: "Schedules and toppers"
+description: "Read the schedule and the topper lists of a subfest, including unpublished data, with the Internal API."
+---
+
+Use these endpoints to read the schedule of a subfest and its topper lists. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints are read only. They include drafts and unpublished data, such as schedule slots that are not published yet.
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests).
+
+---
+
+## List schedules
+
+Returns the schedule slots of a subfest. This is the working schedule, so it includes slots that are not published yet.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/schedules
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `subFestProgramId` | `UUID` | — | Show only slots of this subfest programme. |
+| `subFestProgramIds` | `UUID` | — | Show only slots of these subfest programmes. Use comma-separated IDs. |
+| `venueId` | `UUID` | — | Show only slots at this venue. |
+| `scheduledAtFrom` | `string` | — | Show only slots from this date and time. Use an ISO date-time. |
+| `scheduledAtTo` | `string` | — | Show only slots up to this date and time. Use an ISO date-time. |
+| `sortOrder` | `string` | `asc` | Sorts by scheduled time: `asc` or `desc`. |
+
+### Schedule fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The schedule slot ID. |
+| `subFestId` | The ID of the subfest. |
+| `subFestProgramId` | The subfest programme ID. |
+| `scheduledAt` | When the slot starts. |
+| `durationMinutes` | The length of the slot in minutes. |
+| `venueId` | The ID of the venue, or `null`. |
+| `roundId` | The ID of the round, or `null`. |
+| `roundName` | The name of the round, or `null`. |
+| `createdAt` | When the record was created. |
+| `updatedAt` | When the record was last updated. |
+| `venue` | The venue, with `id` and `name`. `null` if there is none. |
+| `subFestProgram` | The programme, with `id`, `name`, `code` and `categoryName`. |
+| `programmeConflictCount` | The number of unresolved clashes that involve this programme. |
+| `unresolvedConflictCount` | The number of unresolved clashes in the whole subfest. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/schedules?venueId=c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f&sortOrder=asc" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "subFestProgramId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+      "scheduledAt": "2026-03-10T09:00:00.000Z",
+      "durationMinutes": 10,
+      "venueId": "c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f",
+      "roundId": null,
+      "roundName": null,
+      "createdAt": "2026-02-01T10:00:00.000Z",
+      "updatedAt": "2026-02-02T08:15:00.000Z",
+      "venue": {
+        "id": "c4d5e6f7-a8b9-4c0d-8e1f-2a3b4c5d6e7f",
+        "name": "Main Stage"
+      },
+      "subFestProgram": {
+        "id": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+        "name": "Demo Recitation",
+        "code": "J-101",
+        "categoryName": "Junior"
+      },
+      "programmeConflictCount": 0,
+      "unresolvedConflictCount": 2
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or a filter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## List topper lists
+
+Returns the topper lists of a subfest. A topper list is also called a topper placeholder. This endpoint has no pagination.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/toppers
+```
+
+### Topper list fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The topper list ID. Use it as `{placeholderId}` below. |
+| `subFestId` | The ID of the subfest. |
+| `label` | The name of the list. |
+| `entityType` | What the list ranks. |
+| `scopeConfig` | How the list is grouped. |
+| `rankingBasis` | What the ranking is based on. |
+| `maxPointsOverride` | The highest points override, or `null`. |
+| `displayTopN` | How many entries to show. |
+| `allowedTies` | Whether ties are allowed. |
+| `tieBreakerConfig` | How ties are broken. |
+| `displayOrder` | The order of the list. |
+| `isPublished` | `true` if the list is published. |
+| `isDefault` | `true` if this is a default list. |
+| `dirty` | `true` if the list needs to be calculated again. |
+| `lastComputedAt` | When the list was last calculated, or `null`. |
+| `lastResultVersion` | The result version of the last calculation. |
+| `createdAt` | When the record was created. |
+| `updatedAt` | When the record was last updated. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/toppers" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "label": "Junior toppers",
+      "entityType": "CANDIDATE",
+      "scopeConfig": {},
+      "rankingBasis": "POINTS",
+      "maxPointsOverride": null,
+      "displayTopN": 3,
+      "allowedTies": true,
+      "tieBreakerConfig": {},
+      "displayOrder": 1,
+      "isPublished": false,
+      "isDefault": false,
+      "dirty": false,
+      "lastComputedAt": "2026-03-10T12:00:00.000Z",
+      "lastResultVersion": 4,
+      "createdAt": "2026-02-01T10:00:00.000Z",
+      "updatedAt": "2026-03-10T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## List topper entries
+
+Returns the ranked entries of one topper list. This endpoint has no pagination. Only entries with points above `0` are returned. Hidden entries are included and flagged with `isHidden`.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/toppers/{placeholderId}
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `placeholderId` | `UUID` | The topper list ID. Get it from the list above. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `placeholderId` | The topper list ID. |
+| `data` | The ranked entries. See [Entry fields](#entry-fields). |
+
+#### Entry fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The entry ID. |
+| `placeholderId` | The topper list ID. |
+| `rank` | The rank. |
+| `subFestCandidateId` | The subfest candidate ID. |
+| `teamId` | The team ID. |
+| `sectionId` | The section ID. |
+| `candidateName` | The candidate name. |
+| `candidateChestNo` | The candidate chest number. |
+| `candidateAvatar` | The candidate avatar URL, or `null`. |
+| `teamName` | The team name. |
+| `teamColor` | The team colour. |
+| `categoryName` | The category name. |
+| `candidateSectionKeys` | The section keys of the candidate. |
+| `candidateSectionValues` | The section values of the candidate. |
+| `candidateSectionLabels` | The section labels of the candidate. |
+| `groupCategoryId` | The category ID of a group entry. |
+| `groupTeamId` | The team ID of a group entry. |
+| `groupSectionId` | The section ID of a group entry. |
+| `groupCollectionId` | The collection ID of a group entry. |
+| `groupLabel` | The label of a group entry. |
+| `points` | The points. |
+| `rawPoints` | The points before any change. |
+| `percentage` | The percentage. |
+| `programCount` | The number of programmes counted. |
+| `entrySource` | The entry source: calculated automatically or added by hand. |
+| `isLocked` | `true` if the entry is locked. |
+| `manualNote` | A note added by hand, or `null`. |
+| `manualAt` | When the entry was changed by hand, or `null`. |
+| `isHidden` | `true` if the entry is hidden. |
+| `hiddenAt` | When the entry was hidden, or `null`. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/toppers/7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "placeholderId": "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f",
+  "data": [
+    {
+      "id": "2b3c4d5e-6f70-4a81-8b92-a3b4c5d6e7f8",
+      "placeholderId": "7c8d9e0f-1a2b-4c3d-8e4f-5a6b7c8d9e0f",
+      "rank": 1,
+      "subFestCandidateId": "b7a1c3e5-9d2f-4a68-8b0c-4d5e6f708192",
+      "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "sectionId": null,
+      "candidateName": "Demo Candidate",
+      "candidateChestNo": "101",
+      "candidateAvatar": null,
+      "teamName": "Team Falcon",
+      "teamColor": "#E4572E",
+      "categoryName": "Junior",
+      "candidateSectionKeys": ["Class"],
+      "candidateSectionValues": ["8"],
+      "candidateSectionLabels": ["Class 8"],
+      "groupCategoryId": null,
+      "groupTeamId": null,
+      "groupSectionId": null,
+      "groupCollectionId": null,
+      "groupLabel": null,
+      "points": "42.00",
+      "rawPoints": "42.00",
+      "percentage": "93.33",
+      "programCount": 5,
+      "entrySource": "AUTO",
+      "isLocked": false,
+      "manualNote": null,
+      "manualAt": null,
+      "isHidden": false,
+      "hiddenAt": null
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or topper list ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the topper list does not exist. |
+| `429` | You went over the rate limit. |

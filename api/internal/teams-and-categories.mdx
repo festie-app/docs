@@ -1,0 +1,331 @@
+---
+title: "Teams and categories"
+description: "Read the teams and categories of a subfest, including drafts and unpublished data, with the Internal API."
+---
+
+Use these endpoints to read the teams and categories of a subfest. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints include drafts and unpublished data. Team points include all points, not only published ones.
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests).
+
+## Filters and sorting
+
+List filters accept comma-separated values or repeated parameters. For example, `?search=a,b` works the same as `?search=a&search=b`. Boolean filters use `true` or `false`.
+
+---
+
+## List teams
+
+Returns the teams of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/teams
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `search` | `string` | — | Search by team name or display name. |
+| `colorCode` | `string` | — | Show only teams with exactly this color code, for example `#E4572E`. |
+| `categoryIds` | `UUID` | — | Show only teams in these categories. Teams that take part in all categories are also returned. |
+| `hasCandidates` | `boolean` | — | `true` shows teams with candidates. `false` shows teams without. |
+| `hasLogo` | `boolean` | — | `true` shows teams with a logo. `false` shows teams without. |
+| `membersCountAbove` | `integer` | — | Show only teams with more members than this number. |
+| `membersCountBelow` | `integer` | — | Show only teams with fewer members than this number. |
+| `sortBy` | `string` | `displayOrder` | Sort field: `name`, `createdAt`, `displayOrder` or `colorCode`. |
+| `sortOrder` | `string` | `asc` | Sort direction: `asc` or `desc`. |
+
+### Team fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The team ID. |
+| `subFestId` | The ID of the subfest it belongs to. |
+| `name` | The team name. |
+| `displayName` | The team display name. |
+| `motto` | The team motto. |
+| `logoUrl` | The team logo URL. |
+| `colorCode` | The team color code. |
+| `displayOrder` | The order in which the team is shown. |
+| `participatesInAllCategories` | `true` if the team takes part in all categories. |
+| `createdAt` | When the team was created. |
+| `updatedAt` | When the team was last updated. |
+| `categoryIds` | The IDs of the categories the team takes part in. Empty when the team takes part in all categories. |
+| `membersCount` | The number of team members. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/teams?sortBy=name&sortOrder=asc" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "name": "Team Falcon",
+      "displayName": "Falcons",
+      "motto": "Rise together",
+      "logoUrl": "https://example.com/logos/falcon.png",
+      "colorCode": "#E4572E",
+      "displayOrder": 1,
+      "participatesInAllCategories": false,
+      "createdAt": "2026-01-12T09:00:00.000Z",
+      "updatedAt": "2026-02-01T12:30:00.000Z",
+      "categoryIds": [
+        "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70"
+      ],
+      "membersCount": 24
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or a filter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get a team
+
+Returns one team with its totals and points.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/teams/{teamId}
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `teamId` | `UUID` | The team ID. |
+
+### Response fields
+
+The response has all the [team fields](#team-fields) and these extra fields:
+
+| Field | Description |
+| :--- | :--- |
+| `totalCandidates` | The total number of candidates in the team. |
+| `eligibleProgrammesCount` | The number of programmes the team can take part in. |
+| `categoriesParticipatingCount` | The categories the team takes part in, as text. For example, `3/4`. |
+| `participatedProgrammesCount` | The number of programmes the team took part in. |
+| `totalTeamPoints` | The team's points, including points that are not published. |
+| `publishedTeamPoints` | The team's points from published results only. |
+| `positiveAdjustmentPoints` | Points added by adjustments. |
+| `negativeAdjustmentPoints` | Points removed by adjustments. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/teams/3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "id": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+  "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+  "name": "Team Falcon",
+  "displayName": "Falcons",
+  "motto": "Rise together",
+  "logoUrl": "https://example.com/logos/falcon.png",
+  "colorCode": "#E4572E",
+  "displayOrder": 1,
+  "participatesInAllCategories": false,
+  "createdAt": "2026-01-12T09:00:00.000Z",
+  "updatedAt": "2026-02-01T12:30:00.000Z",
+  "categoryIds": [
+    "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70"
+  ],
+  "membersCount": 24,
+  "totalCandidates": 24,
+  "eligibleProgrammesCount": 40,
+  "categoriesParticipatingCount": "3/4",
+  "participatedProgrammesCount": 18,
+  "totalTeamPoints": 215,
+  "publishedTeamPoints": 180,
+  "positiveAdjustmentPoints": 10,
+  "negativeAdjustmentPoints": 5
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or team ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the team does not exist. |
+| `429` | You went over the rate limit. |
+
+---
+
+## List categories
+
+Returns the categories of a subfest.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/categories
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `search` | `string` | — | Search categories. |
+| `teamIds` | `UUID` | — | Show only categories of these teams. |
+| `sortBy` | `string` | `displayOrder` | Sort field: `name`, `createdAt` or `displayOrder`. |
+| `sortOrder` | `string` | `asc` | Sort direction: `asc` or `desc`. |
+
+### Category fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The category ID. |
+| `subFestId` | The ID of the subfest it belongs to. |
+| `name` | The category name. |
+| `description` | The category description. |
+| `type` | The category type: `SINGLE` or `COMMON`. |
+| `displayOrder` | The order in which the category is shown. |
+| `candidateMaxPoints` | The maximum points a candidate can get. |
+| `teamMaxPoints` | The maximum points a team can get. |
+| `createdAt` | When the category was created. |
+| `updatedAt` | When the category was last updated. |
+| `memberCategoryIds` | For a `COMMON` category, the IDs of the single categories it combines. Empty for a `SINGLE` category. |
+| `teamIds` | The IDs of the teams in the category. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/categories" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "name": "Junior",
+      "description": "Demo category for junior participants",
+      "type": "SINGLE",
+      "displayOrder": 1,
+      "candidateMaxPoints": 30,
+      "teamMaxPoints": 100,
+      "createdAt": "2026-01-12T09:00:00.000Z",
+      "updatedAt": "2026-02-01T12:30:00.000Z",
+      "memberCategoryIds": [],
+      "teamIds": [
+        "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f"
+      ]
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or a filter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get a category
+
+Returns one category. The response has the same [category fields](#category-fields) as the list.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/categories/{categoryId}
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `categoryId` | `UUID` | The category ID. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/categories/8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "id": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+  "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+  "name": "Junior",
+  "description": "Demo category for junior participants",
+  "type": "SINGLE",
+  "displayOrder": 1,
+  "candidateMaxPoints": 30,
+  "teamMaxPoints": 100,
+  "createdAt": "2026-01-12T09:00:00.000Z",
+  "updatedAt": "2026-02-01T12:30:00.000Z",
+  "memberCategoryIds": [],
+  "teamIds": [
+    "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f"
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or category ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the category does not exist. |
+| `429` | You went over the rate limit. |

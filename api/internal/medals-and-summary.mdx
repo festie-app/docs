@@ -1,0 +1,140 @@
+---
+title: "Medals and summary"
+description: "Read the medal counts and a results summary of a subfest with the Internal API."
+---
+
+Use these endpoints to read the medal counts per team and a summary of the results of a subfest. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints are read only. They do not change results and they do not release them.
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests).
+
+---
+
+## Get medal counts
+
+Returns the number of first, second and third places for each team and category. This endpoint has no pagination.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/medal-counts
+```
+
+Only published results are counted.
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `data` | The medal counts. One item for each team and category. |
+
+Each item has these fields:
+
+| Field | Description |
+| :--- | :--- |
+| `teamId` | The team ID. |
+| `categoryId` | The category ID, or `null`. |
+| `firsts` | The number of published first places. |
+| `seconds` | The number of published second places. |
+| `thirds` | The number of published third places. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/medal-counts" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "categoryId": "8d1e4f27-3a5b-4c69-8e70-2b3c4d5e6f70",
+      "firsts": 4,
+      "seconds": 2,
+      "thirds": 3
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get the results summary
+
+Returns how many programmes have results, and how many of them are published or not published. This endpoint has no pagination.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/results/summary
+```
+
+<Note>
+  **Unpublished results are included in this summary.** The counts cover programmes that have results and whose status is draft, results generated, checked to publish, checked to unpublish or results published. Programmes that are only at the evaluated stage are not counted.
+</Note>
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `totalPrograms` | The total number of programmes counted. |
+| `totalResults` | The total number of results. |
+| `generatedPrograms` | The number of programmes that have results. |
+| `publishedPrograms` | The number of programmes with at least one published result. |
+| `unpublishedPrograms` | The number of programmes with at least one unpublished result. |
+| `checkedToPublishPrograms` | The number of programmes with the checked to publish status. |
+
+A programme can count as both published and unpublished. This happens when it has at least one published result and at least one unpublished result.
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/results/summary" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "totalPrograms": 12,
+  "totalResults": 84,
+  "generatedPrograms": 12,
+  "publishedPrograms": 8,
+  "unpublishedPrograms": 5,
+  "checkedToPublishPrograms": 3
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival. |
+| `429` | You went over the rate limit. |

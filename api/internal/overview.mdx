@@ -1,0 +1,79 @@
+---
+title: "Internal API overview"
+description: "Use the Festie Internal REST API to read your festival's full data, including drafts and unpublished data, from your own backend."
+---
+
+The Internal API gives your backend full read access to your festival's data. Unlike the public API, it also returns drafts and unpublished data. Field names match what you see in the Festie admin app.
+
+## Base URL
+
+All requests go to the `/internal-api/v1` path on your Festie API domain:
+
+```bash
+https://api.festie.app/internal-api/v1
+```
+
+If you run a self-hosted instance, replace `api.festie.app` with your API domain.
+
+<Warning>
+  **Internal keys expose unpublished data.** Use them only on your own backend server. Never put an internal key in browser code, a website, or a mobile app. Anyone who finds the key can read your draft and unpublished data.
+</Warning>
+
+## Internal API and public API
+
+Both APIs use the `X-API-Key` header. A key only works with the API it was created for.
+
+| | Public API | Internal API |
+| :--- | :--- | :--- |
+| Base path | `/public-api/v1` | `/internal-api/v1` |
+| Data returned | Published data only | Full data, including drafts and unpublished data |
+| Key access | Public keys | Keys with internal access |
+| Default page size | `20` | `50` |
+| Maximum page size | `20` | `200` |
+
+<Note>
+  The Internal API is being released in phases. These endpoints are available now:
+
+  - [Festival and subfests](/api/internal/festival-and-subfests): your festival and its subfests.
+  - [Teams and categories](/api/internal/teams-and-categories): teams and categories of a subfest.
+  - [Candidates](/api/internal/candidates): candidates of a subfest.
+  - [Programmes](/api/internal/programmes): programmes of a subfest and their registrations.
+  - [Results and scores](/api/internal/results-and-scores): programme results and the judge scoreboard.
+  - [Schedules and toppers](/api/internal/schedules-and-toppers): schedules and topper lists of a subfest.
+  - [Medals and summary](/api/internal/medals-and-summary): medal counts per team and a results summary of a subfest.
+
+  The programme responses do not include the effective (inherited) judging settings or the substitution rules yet.
+</Note>
+
+## Pagination
+
+List endpoints accept `page` and `limit` query parameters. The default `limit` is `50` and the maximum is `200`.
+
+List responses use this shape:
+
+```json
+{
+  "data": [],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 0,
+    "totalPages": 0,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+| Field | Meaning |
+| :--- | :--- |
+| `page` | The current page number. |
+| `limit` | The number of records per page. |
+| `total` | The total number of records. |
+| `totalPages` | The total number of pages. |
+| `hasNextPage` | `true` if there is a page after this one. |
+| `hasPrevPage` | `true` if there is a page before this one. |
+
+<Tip>
+  Next, read [Authentication](/api/internal/authentication) to create a key with internal access.
+</Tip>

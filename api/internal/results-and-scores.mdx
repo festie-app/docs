@@ -1,0 +1,307 @@
+---
+title: "Results and scores"
+description: "Read the results and the judge scoreboard of a programme, including unpublished data, with the Internal API."
+---
+
+Use these endpoints to read the results of a programme and the scores each judge gave. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+These endpoints are read only. They do not change scores and they do not release results.
+
+<Warning>
+  **Unpublished results are included.** Results that are not published yet are returned too. Use `isPublished` to tell them apart. Do not show unpublished results to the public.
+</Warning>
+
+<Warning>
+  **The scoreboard includes personal data.** Each judge is returned with their email. Store your key securely and keep this data on your backend server.
+</Warning>
+
+In every path, `{subFestId}` is the subfest ID. Get it from `GET /internal-api/v1/subfests`. See [Festival and subfests](/api/internal/festival-and-subfests). `{programme}` is the subfest programme ID or the programme code. Get it from the [Programmes](/api/internal/programmes) endpoints.
+
+---
+
+## List programme results
+
+Returns the results of one programme. This endpoint has no pagination. It returns every result, newest first.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/programmes/{programme}/results
+```
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `programme` | `string` | The subfest programme ID or the programme code. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `subFestProgramId` | The subfest programme ID. |
+| `resultStatus` | The result status of the programme. |
+| `results` | The results. See [Result fields](#result-fields). |
+
+#### Result fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The result ID. |
+| `registrationId` | The registration ID. Set for single entries. Otherwise `null`. |
+| `groupRegistrationId` | The group registration ID. Set for group entries. Otherwise `null`. |
+| `teamId` | The team ID. |
+| `participantName` | The candidate name. For a group entry, the group name. |
+| `teamName` | The team name. |
+| `code` | The code letter, or `null`. |
+| `chestNo` | The chest number. Single entries only. |
+| `position` | The position. |
+| `rank` | The rank. |
+| `grade` | The grade. |
+| `positionPoints` | The points for the position, or `null`. |
+| `gradePoints` | The points for the grade, or `null`. |
+| `totalPoints` | The total points, or `null`. |
+| `candidatePoints` | The points for the candidate, or `null`. |
+| `teamPoints` | The points for the team, or `null`. |
+| `totalScore` | The total score, or `null`. |
+| `totalOutOf` | The highest possible total score, or `null`. |
+| `scorePercentage` | The score as a percentage, or `null`. |
+| `isTotalEdited` | `true` if an admin entered the total instead of it being calculated from the judge scores. |
+| `isPublished` | `false` if the result is not published yet. |
+| `publishedAt` | When the result was published, or `null`. |
+
+Points and scores are strings with decimals, for example `"9.50"`, or `null`.
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101/results" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "subFestProgramId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+  "resultStatus": "EVALUATED",
+  "results": [
+    {
+      "id": "b1c2d3e4-f5a6-4b78-8c9d-0e1f2a3b4c5d",
+      "registrationId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "groupRegistrationId": null,
+      "teamId": "3f2c8a14-6b7d-4e19-9c50-1a2b3c4d5e6f",
+      "participantName": "Demo Candidate",
+      "teamName": "Team Falcon",
+      "code": "A",
+      "chestNo": "101",
+      "position": 1,
+      "rank": 1,
+      "grade": "A",
+      "positionPoints": "5.00",
+      "gradePoints": "5.00",
+      "totalPoints": "10.00",
+      "candidatePoints": "10.00",
+      "teamPoints": "10.00",
+      "totalScore": "28.50",
+      "totalOutOf": "30.00",
+      "scorePercentage": "95.00",
+      "isTotalEdited": false,
+      "isPublished": false,
+      "publishedAt": null
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or programme is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the programme does not exist. |
+| `429` | You went over the rate limit. |
+
+---
+
+## Get the programme scoreboard
+
+Returns the judges, the judging columns and the score of every entry for one programme. This endpoint has no pagination.
+
+```http
+GET /internal-api/v1/subfests/{subFestId}/programmes/{programme}/scoreboard
+```
+
+<Note>
+  **Not included.** The response does not say whether a judge is locked or whether the judging window is open.
+</Note>
+
+### Path parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | The subfest ID. |
+| `programme` | `string` | The subfest programme ID or the programme code. |
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `subFestProgramId` | The subfest programme ID. |
+| `resultStatus` | The result status of the programme. |
+| `totalsEditedByAdmin` | Whether totals were entered by an admin. |
+| `judges` | The judges of the programme. See [Judge fields](#judge-fields). |
+| `columns` | The judging columns. See [Column fields](#column-fields). |
+| `rows` | One row per entry. Candidates for individual programmes. Groups for group and team programmes. See [Row fields](#row-fields). |
+
+#### Judge fields
+
+| Field | Description |
+| :--- | :--- |
+| `judgeId` | The judge ID. |
+| `judgeName` | The judge name. |
+| `email` | The judge email. This is personal data. |
+| `programJudgeId` | The ID of the judge's assignment to this programme. |
+| `status` | `ASSIGNED`, `SUBMITTED` or `VERIFIED`. |
+| `isChief` | `true` if the judge is the chief judge. |
+| `isSubstitute` | `true` if the judge is a substitute. |
+| `hasSavedScores` | `true` if the judge saved scores. |
+| `submittedAt` | When the judge submitted, or `null`. |
+| `verifiedAt` | When the scores were verified, or `null`. |
+
+#### Column fields
+
+| Field | Description |
+| :--- | :--- |
+| `columnId` | The column ID. |
+| `columnName` | The column name. |
+| `maxPoints` | The highest points for the column. |
+
+#### Row fields
+
+| Field | Description |
+| :--- | :--- |
+| `key` | A unique key for the row. |
+| `registrationId` | The registration ID. Set for single entries. |
+| `groupRegistrationId` | The group registration ID. Set for group entries. |
+| `candidateName` | The candidate name or the group name. |
+| `candidateAvatar` | The avatar URL, or `null`. |
+| `code` | The code. |
+| `codeLetter` | The code letter. |
+| `chestNumber` | The chest number. |
+| `admissionNumber` | The admission number. |
+| `sectionName` | The section name. |
+| `teamName` | The team name. |
+| `teamColor` | The team colour. |
+| `totalScore` | The total score. |
+| `totalOutOf` | The highest possible total score. |
+| `isTotalEdited` | `true` if an admin entered the total. |
+| `originalTotalScore` | The total before the admin edit. |
+| `judges` | The score of each judge for this entry. See [Row judge fields](#row-judge-fields). |
+
+#### Row judge fields
+
+Each item has all the [judge fields](#judge-fields) and these fields:
+
+| Field | Description |
+| :--- | :--- |
+| `score` | The score the judge gave. |
+| `outOf` | The highest possible score. |
+| `remarks` | The judge's remarks. |
+| `selfieUrl` | The URL of the judge's selfie, or `null`. |
+| `columnScores` | The score for each column. Each item has `columnId`, `columnName`, `maxPoints` and `score`. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests/5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a/programmes/J-101/scoreboard" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "subFestProgramId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+  "resultStatus": "EVALUATED",
+  "totalsEditedByAdmin": false,
+  "judges": [
+    {
+      "judgeId": "c0d1e2f3-a4b5-4c67-8d89-0a1b2c3d4e5f",
+      "judgeName": "Demo Judge",
+      "email": "judge@example.com",
+      "programJudgeId": "a2b3c4d5-e6f7-4a89-8b0c-1d2e3f4a5b6c",
+      "status": "SUBMITTED",
+      "isChief": true,
+      "isSubstitute": false,
+      "hasSavedScores": true,
+      "submittedAt": "2026-03-10T10:30:00.000Z",
+      "verifiedAt": null
+    }
+  ],
+  "columns": [
+    {
+      "columnId": "f4a5b6c7-d8e9-4f01-8a2b-3c4d5e6f7a8b",
+      "columnName": "Delivery",
+      "maxPoints": 10
+    }
+  ],
+  "rows": [
+    {
+      "key": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "registrationId": "e5f6a7b8-c9d0-4e1f-8a2b-3c4d5e6f7a8b",
+      "groupRegistrationId": null,
+      "candidateName": "Demo Candidate",
+      "candidateAvatar": null,
+      "code": "A",
+      "codeLetter": "A",
+      "chestNumber": "101",
+      "admissionNumber": "ADM-0001",
+      "sectionName": "Class 8",
+      "teamName": "Team Falcon",
+      "teamColor": "#E4572E",
+      "totalScore": 9.5,
+      "totalOutOf": 10,
+      "isTotalEdited": false,
+      "originalTotalScore": null,
+      "judges": [
+        {
+          "judgeId": "c0d1e2f3-a4b5-4c67-8d89-0a1b2c3d4e5f",
+          "judgeName": "Demo Judge",
+          "email": "judge@example.com",
+          "programJudgeId": "a2b3c4d5-e6f7-4a89-8b0c-1d2e3f4a5b6c",
+          "status": "SUBMITTED",
+          "isChief": true,
+          "isSubstitute": false,
+          "hasSavedScores": true,
+          "submittedAt": "2026-03-10T10:30:00.000Z",
+          "verifiedAt": null,
+          "score": 9.5,
+          "outOf": 10,
+          "remarks": "Clear and confident.",
+          "selfieUrl": null,
+          "columnScores": [
+            {
+              "columnId": "f4a5b6c7-d8e9-4f01-8a2b-3c4d5e6f7a8b",
+              "columnName": "Delivery",
+              "maxPoints": 10,
+              "score": 9.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | The subfest ID or programme is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `404` | The subfest is not in your festival, or the programme does not exist. |
+| `429` | You went over the rate limit. |

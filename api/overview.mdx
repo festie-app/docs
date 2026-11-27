@@ -55,7 +55,7 @@ To get started with the Festie Developer API:
     Log in to the Festie admin portal, go to `Festival > Settings > API Keys`. Verify that your current subscription includes the Developer API feature.
   </Step>
   <Step title="Generate an API Key">
-    Click **Create API Key**, specify a descriptive label (such as `Backend-Server` or `Results-Sync-Cron`), and save the generated key securely.
+    Click **Generate Key**, specify a descriptive label (such as `Backend-Server` or `Results-Sync-Cron`), and save the generated key securely.
   </Step>
   <Step title="Set Up Your Server Environment">
     Add `FESTIE_API_KEY` to your backend server's environment variables (`.env`). Never commit this key to version control or expose it to client-side bundles.
@@ -132,7 +132,7 @@ Festie Public API uses standard HTTP response codes to communicate success and f
 | `200` | OK | The request succeeded and returns the requested payload. |
 | `400` | Bad Request | Missing required parameter (e.g. `subFestId` missing) or invalid parameter format. |
 | `401` | Unauthorized | Missing `X-API-Key` header, inactive API key, or expired key. |
-| `403` | Forbidden | Quota exceeded or festival subscription lacks the public API feature. |
+| `403` | Forbidden | Your festival plan does not include the public API feature. |
 | `404` | Not Found | The requested candidate, programme, news item, or subfest was not found. |
 | `429` | Too Many Requests | Rate limit exceeded (per-minute requests threshold reached). |
 | `503` | Service Unavailable | Quota tracking service temporarily unavailable. |

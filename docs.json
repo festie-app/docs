@@ -81,6 +81,7 @@
                   "admin/programmes",
                   "admin/import-programmes",
                   "admin/programme-collections",
+                  "admin/skills",
                   "admin/curbs"
                 ]
               },
@@ -163,6 +164,20 @@
                 "pages": [
                   "api/overview",
                   "api/authentication"
+                ]
+              },
+              {
+                "group": "Internal API",
+                "pages": [
+                  "api/internal/overview",
+                  "api/internal/authentication",
+                  "api/internal/festival-and-subfests",
+                  "api/internal/teams-and-categories",
+                  "api/internal/candidates",
+                  "api/internal/programmes",
+                  "api/internal/results-and-scores",
+                  "api/internal/schedules-and-toppers",
+                  "api/internal/medals-and-summary"
                 ]
               },
               {

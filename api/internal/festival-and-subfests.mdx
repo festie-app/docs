@@ -1,0 +1,159 @@
+---
+title: "Festival and subfests"
+description: "Read your festival details and list all of its subfests, including inactive ones, with the Internal API."
+---
+
+Use these endpoints to read your festival and its subfests. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+## Get the festival
+
+Returns the festival that owns your API key.
+
+```http
+GET /internal-api/v1/festival
+```
+
+### Response fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The festival ID. |
+| `name` | The festival name. |
+| `subdomain` | The festival subdomain. |
+| `status` | The festival status. |
+| `levels` | The festival levels. Each level has `id`, `name`, `levelOrder` and `description`. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/festival" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "id": "db0e7419-8d01-4481-83c9-d997cc481a9c",
+  "name": "Spring Fest",
+  "subdomain": "springfest",
+  "status": "ACTIVE",
+  "levels": [
+    {
+      "id": "7b0efd24-d2e8-466a-bc91-381c85354921",
+      "name": "Campus level",
+      "levelOrder": 1,
+      "description": "Events between campus teams"
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `429` | You went over the rate limit. |
+
+---
+
+## List subfests
+
+Returns the subfests of your festival, including inactive ones.
+
+```http
+GET /internal-api/v1/subfests
+```
+
+### Query parameters
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `page` | `integer` | `1` | The page number. |
+| `limit` | `integer` | `50` | Records per page. The maximum is `200`. |
+| `sortBy` | `string` | — | Sort field: `name`, `createdAt` or `status`. |
+| `sortOrder` | `string` | — | Sort direction: `asc` or `desc`. |
+| `search` | `string` | — | Search subfests. |
+| `levelId` | `UUID` | — | Show only subfests of this level. |
+| `status` | `string` | — | Show only this status: `INACTIVE`, `ACTIVE`, `SUSPENDED` or `BANNED`. |
+
+### Subfest fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The subfest ID. |
+| `festivalId` | The ID of the festival it belongs to. |
+| `levelId` | The ID of its level. |
+| `parentSubFestId` | The ID of its parent subfest, or `null`. |
+| `name` | The subfest name. |
+| `slug` | The subfest URL slug. |
+| `status` | The subfest status. |
+| `timeZone` | The subfest time zone. |
+| `createdAt` | When the subfest was created. |
+| `updatedAt` | When the subfest was last updated. |
+| `level` | The level, with `id`, `name`, `levelOrder` and `description`. |
+| `subFestProfile` | The profile, with `id`, `location`, `host`, `startDate` and `endDate`. `null` if there is none. |
+| `subFestWebsite` | The website, with `id` and `isEnabled`. `null` if there is none. |
+
+### Example request
+
+```bash
+curl -X GET "https://api.festie.app/internal-api/v1/subfests?page=1&limit=50&sortBy=name&sortOrder=asc" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "festivalId": "db0e7419-8d01-4481-83c9-d997cc481a9c",
+      "levelId": "7b0efd24-d2e8-466a-bc91-381c85354921",
+      "parentSubFestId": null,
+      "name": "Spring Arts 2026",
+      "slug": "arts-2026",
+      "status": "ACTIVE",
+      "timeZone": "Asia/Kolkata",
+      "createdAt": "2026-01-10T09:00:00.000Z",
+      "updatedAt": "2026-02-01T12:30:00.000Z",
+      "level": {
+        "id": "7b0efd24-d2e8-466a-bc91-381c85354921",
+        "name": "Campus level",
+        "levelOrder": 1,
+        "description": "Events between campus teams"
+      },
+      "subFestProfile": {
+        "id": "0f6d2a9c-4b1e-4c57-9a3e-2d8e5b7c1a40",
+        "location": "Demo College",
+        "host": "Demo Arts Club",
+        "startDate": "2026-03-10T00:00:00.000Z",
+        "endDate": "2026-03-12T00:00:00.000Z"
+      },
+      "subFestWebsite": {
+        "id": "c2e4b6a8-1d3f-4a5b-8c7d-9e0f1a2b3c4d",
+        "isEnabled": true
+      }
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 50,
+    "total": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `429` | You went over the rate limit. |
