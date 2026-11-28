@@ -1,0 +1,407 @@
+---
+title: "Programmes with results"
+description: "Read every programme of your festival together with its results in one call with the Internal API."
+---
+
+Use this endpoint to get every programme of every subfest of your festival, each with its results, in one call. The maximum points and the teams are listed once per subfest, so the response stays small. You need a key with internal access. See [Authentication](/api/internal/authentication).
+
+This endpoint is read only. It does not change scores and it does not release results.
+
+<Warning>
+  **Unpublished results are included.** Results that are not published yet are returned too. Use `isPublished` to tell them apart. Do not show unpublished results to the public.
+</Warning>
+
+<Warning>
+  **The response can be large.** This endpoint has no pagination and no limit. The server reads the results in chunks, but a big festival can still take a while. Set a client timeout of at least 120 seconds. Call it from your backend server and do not call it often. The rate limit applies.
+</Warning>
+
+---
+
+## List programmes with results
+
+Returns all programmes of the festival of your key, ordered by subfest name and then by programme code.
+
+```http
+GET /internal-api/v1/programmes-results
+```
+
+### Query parameters
+
+All parameters are optional.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `subFestId` | `UUID` | Return the programmes of this subfest only. Get the ID from [Festival and subfests](/api/internal/festival-and-subfests). |
+| `statuses` | `string` | Return only programmes with these result statuses. Send a comma separated list, or repeat the parameter. Values: `DRAFT`, `EVALUATED`, `RESULTS_GENERATED`, `CHECKED_TO_PUBLISH`, `CHECKED_TO_UNPUBLISH`, `RESULTS_PUBLISHED`. |
+
+### Response fields
+
+The response is an object with two arrays: `subFests` and `data`.
+
+```json
+{ "subFests": [], "data": [] }
+```
+
+- `subFests` has one item per subfest that has programmes in the response. It holds the categories, the maximum points, the teams and the skills.
+- `data` has one item per programme, with its results.
+
+Maximum points and teams are the same for every programme of a subfest. We list them once in `subFests` and not inside every result. This keeps the response small, even for a big festival. Programmes and results only carry IDs and names that point into `subFests`.
+
+#### How to read max points
+
+1. Take the `subFestId` of the programme and find that subfest in `subFests`.
+2. In that subfest, find the category with the same `id` as the `category.id` of the result.
+3. The `candidateMaxPoints` and `teamMaxPoints` of that category are the maximum points of the category.
+4. For the maximum points of a skill, look in the `skills` of that category. Find the skill by `skillId`. The skills of the programme are in the `skills` of the programme. If the skill has `teamMaxPointsMode` `PER_TEAM`, find the team by `teamId` in the `teams` of that skill for the team maximum.
+5. For the maximum points of the team, look in the `participatingTeams` of that category. Find the team by `teamId`, which is the `team.id` of the result.
+
+A maximum that is not set is `null`.
+
+#### Subfest fields
+
+Each item of `subFests` is a subfest.
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The subfest ID. |
+| `name` | The subfest name. |
+| `categories` | The categories of the subfest. See [Category fields](#category-fields). |
+| `teams` | The teams of the subfest. See [Team fields](#team-fields). |
+| `skills` | The skills of the subfest. See [Skill fields](#skill-fields). |
+
+#### Category fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The category ID. |
+| `name` | The category name. |
+| `type` | `SINGLE` or `COMMON`. |
+| `displayOrder` | The order of the category in the subfest. |
+| `candidateMaxPoints` | The maximum points for a candidate in this category, or `null`. |
+| `teamMaxPoints` | The maximum points for a team in this category, or `null`. |
+| `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. With `PER_TEAM`, each team can have its own maximum. |
+| `skills` | The maximum points of each skill in this category. See [Category skill fields](#category-skill-fields). |
+| `participatingTeams` | The teams that take part in this category. Each item has `teamId` and `teamMaxPoints`. In `PER_TEAM` mode this is the own maximum of the team if it is set. Otherwise it is the `teamMaxPoints` of the category. |
+
+<Note>
+  The team maximum points ignore the subfest setting that sends common programme points to the common category. They are always the values of the category of the entry.
+</Note>
+
+#### Category skill fields
+
+Each item of `skills` in a category is one skill's maximum points in that category.
+
+| Field | Description |
+| :--- | :--- |
+| `skillId` | The skill ID. |
+| `name` | The skill name. |
+| `candidateMaxPoints` | The maximum points for a candidate in this skill and category, or `null`. |
+| `teamMaxPoints` | The maximum points for a team in this skill and category, or `null`. With `PER_TEAM`, this is the default for teams without their own value. |
+| `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. The mode is set per skill, so it is the same in every category. |
+| `teams` | With `PER_TEAM`, every team that takes part in this category. Each item has `teamId` and `teamMaxPoints`: the team's own maximum if it is set, otherwise the `teamMaxPoints` of this skill and category, or `null`. With `UNIFORM`, an empty array. |
+
+#### Team fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The team ID. |
+| `name` | The team name. |
+| `displayName` | The team display name. |
+| `colorCode` | The team color code. |
+| `participatesInAllCategories` | `true` if the team takes part in all categories of the subfest. |
+
+#### Skill fields
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The skill ID. |
+| `name` | The skill name. |
+| `description` | The skill description, or `null`. |
+| `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. With `PER_TEAM`, each team can have its own maximum for this skill. |
+
+#### Programme fields
+
+Each item of `data` is a programme.
+
+| Field | Description |
+| :--- | :--- |
+| `subFestId` | The subfest ID. Use it to find the subfest in `subFests`. |
+| `subFestName` | The subfest name. |
+| `programmeId` | The programme ID. |
+| `programmeCode` | The programme code. |
+| `programmeName` | The programme name. |
+| `programmeType` | `INDIVIDUAL`, `GROUP` or `TEAM`. |
+| `status` | The result status of the programme. |
+| `category` | The category of the programme, or `null`. It has `id` and `name`. |
+| `allowedCategories` | The categories that can enter the programme. Each item has `id` and `name`. |
+| `skills` | The skills of the programme. Each item has `id` and `name`. |
+| `collections` | The collections assigned to the programme. Each item has `id`, `key` and `value`. |
+| `results` | The results. See [Result fields](#result-fields). A programme without results has an empty array. |
+
+#### Result fields
+
+Results are ordered by rank, then by total points, highest first. All fields are always returned, except `members`.
+
+| Field | Description |
+| :--- | :--- |
+| `id` | The result ID. |
+| `type` | `INDIVIDUAL` or `GROUP`. |
+| `registrationId` | The registration ID of an individual entry, or `null`. |
+| `groupRegistrationId` | The registration ID of a group entry, or `null`. |
+| `code` | The code letter of the entry, or `null`. |
+| `chestNo` | The chest number. `null` for group entries. |
+| `name` | The candidate name. For a group entry, the group name. |
+| `members` | The members of a group entry. Each item has `chestNo`, `name` and `categoryId`. Not returned for individual entries. |
+| `team` | The team of the entry, or `null`. It has `id`, `name` and `displayName`. Find the full team in `teams` of the subfest. |
+| `category` | The category of the entry, or `null`. It has `id` and `name`. For an individual entry, this is the category of the candidate. If the candidate has none, it is the category of the programme. For a group entry, it is the category of the programme. |
+| `pool` | The subfest name. |
+| `position` | The position as a number, or `null`. |
+| `rank` | The rank as a number, or `null`. |
+| `grade` | The grade, or `null`. |
+| `positionPoints` | The points for the position, or `null`. |
+| `gradePoints` | The points for the grade, or `null`. |
+| `totalPoints` | The total points, or `null`. |
+| `candidatePoints` | The points that go to the candidate, or `null`. |
+| `teamPoints` | The points that go to the team, or `null`. |
+| `totalScore` | The total score, or `null`. |
+| `totalOutOf` | The score the total is out of, or `null`. |
+| `scorePercentage` | The score as a percentage, or `null`. |
+| `isTotalEdited` | `true` if the total score was edited by hand. |
+| `originalTotalScore` | The total score before it was edited, or `null`. |
+| `isPublished` | `false` if the result is not published yet. |
+| `publishedAt` | When the result was published, or `null`. ISO 8601. |
+| `createdAt` | When the result was created. ISO 8601. |
+| `updatedAt` | When the result was last updated. ISO 8601. |
+| `timestamp` | `publishedAt`. If the result is not published, `updatedAt`. ISO 8601. |
+
+All points and scores are strings with decimals, for example `"5.00"`, or `null`.
+
+### Example request
+
+```bash
+curl -X GET "https://public-api.festie.app/internal-api/v1/programmes-results" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  --max-time 120
+```
+
+To get one subfest and only published programmes:
+
+```bash
+curl -X GET "https://public-api.festie.app/internal-api/v1/programmes-results?subFestId=5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a&statuses=RESULTS_PUBLISHED" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  --max-time 120
+```
+
+
+### Example response
+
+The subfest has two categories: `General` (common) and `Junior`. The first programme has two individual results. The candidates are in different categories. To get the maximum points of the first result, find the category `Junior` in `subFests`. For the team, look in `participatingTeams` of that category.
+
+```json
+{
+  "subFests": [
+    {
+      "id": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "name": "Demo Pool A",
+      "categories": [
+        {
+          "id": "8a2b3c4d-5e6f-4a71-9b82-a3c4d5e6f7a8",
+          "name": "General",
+          "type": "COMMON",
+          "displayOrder": 1,
+          "candidateMaxPoints": "10.00",
+          "teamMaxPoints": "20.00",
+          "teamMaxPointsMode": "UNIFORM",
+          "skills": [
+            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "10.00", "teamMaxPoints": "20.00", "teamMaxPointsMode": "UNIFORM", "teams": [] }
+          ],
+          "participatingTeams": [
+            { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "20.00" },
+            { "teamId": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "teamMaxPoints": "20.00" }
+          ]
+        },
+        {
+          "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7",
+          "name": "Junior",
+          "type": "SINGLE",
+          "displayOrder": 2,
+          "candidateMaxPoints": "8.00",
+          "teamMaxPoints": "30.00",
+          "teamMaxPointsMode": "PER_TEAM",
+          "skills": [
+            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "8.00", "teamMaxPoints": "16.00", "teamMaxPointsMode": "UNIFORM", "teams": [] },
+            {
+              "skillId": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d",
+              "name": "Music",
+              "candidateMaxPoints": null,
+              "teamMaxPoints": "30.00",
+              "teamMaxPointsMode": "PER_TEAM",
+              "teams": [
+                { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "24.00" },
+                { "teamId": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "teamMaxPoints": "30.00" }
+              ]
+            }
+          ],
+          "participatingTeams": [
+            { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "25.00" },
+            { "teamId": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "teamMaxPoints": "30.00" }
+          ]
+        }
+      ],
+      "teams": [
+        { "id": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "name": "Team Falcon", "displayName": "Falcon", "colorCode": "#1E90FF", "participatesInAllCategories": true },
+        { "id": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "name": "Team Hawk", "displayName": "Hawk", "colorCode": "#FF8C00", "participatesInAllCategories": true }
+      ],
+      "skills": [
+        { "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "description": "Demo skill description", "teamMaxPointsMode": "UNIFORM" },
+        { "id": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d", "name": "Music", "description": null, "teamMaxPointsMode": "PER_TEAM" }
+      ]
+    }
+  ],
+  "data": [
+    {
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "subFestName": "Demo Pool A",
+      "programmeId": "d3b7a9c1-2e4f-4a56-8b78-9c0d1e2f3a4b",
+      "programmeCode": "J-101",
+      "programmeName": "Demo Speech",
+      "programmeType": "INDIVIDUAL",
+      "status": "RESULTS_PUBLISHED",
+      "category": { "id": "8a2b3c4d-5e6f-4a71-9b82-a3c4d5e6f7a8", "name": "General" },
+      "allowedCategories": [
+        { "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7", "name": "Junior" }
+      ],
+      "skills": [
+        { "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech" }
+      ],
+      "collections": [
+        { "id": "c0a1b2c3-d4e5-4f67-8a9b-0c1d2e3f4a5b", "key": "Level", "value": "Junior" }
+      ],
+      "results": [
+        {
+          "id": "b1c2d3e4-f5a6-4b78-8c9d-0e1f2a3b4c5d",
+          "type": "INDIVIDUAL",
+          "registrationId": "11111111-aaaa-4bbb-8ccc-000000000001",
+          "groupRegistrationId": null,
+          "code": "A",
+          "chestNo": "101",
+          "name": "Demo Candidate",
+          "team": { "id": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "name": "Team Falcon", "displayName": "Falcon" },
+          "category": { "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7", "name": "Junior" },
+          "pool": "Demo Pool A",
+          "position": 1,
+          "rank": 1,
+          "grade": "A",
+          "positionPoints": "5.00",
+          "gradePoints": "3.00",
+          "totalPoints": "8.00",
+          "candidatePoints": "8.00",
+          "teamPoints": "8.00",
+          "totalScore": "92.50",
+          "totalOutOf": "100.00",
+          "scorePercentage": "92.50",
+          "isTotalEdited": false,
+          "originalTotalScore": null,
+          "isPublished": true,
+          "publishedAt": "2026-03-10T10:30:00.000Z",
+          "createdAt": "2026-03-09T08:00:00.000Z",
+          "updatedAt": "2026-03-10T10:00:00.000Z",
+          "timestamp": "2026-03-10T10:30:00.000Z"
+        },
+        {
+          "id": "b2c3d4e5-f6a7-4b89-8d0e-1f2a3b4c5d6e",
+          "type": "INDIVIDUAL",
+          "registrationId": "11111111-aaaa-4bbb-8ccc-000000000002",
+          "groupRegistrationId": null,
+          "code": "B",
+          "chestNo": "201",
+          "name": "Demo General Candidate",
+          "team": { "id": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "name": "Team Hawk", "displayName": "Hawk" },
+          "category": { "id": "8a2b3c4d-5e6f-4a71-9b82-a3c4d5e6f7a8", "name": "General" },
+          "pool": "Demo Pool A",
+          "position": 2,
+          "rank": 2,
+          "grade": "B",
+          "positionPoints": "3.00",
+          "gradePoints": "2.00",
+          "totalPoints": "5.00",
+          "candidatePoints": "5.00",
+          "teamPoints": "5.00",
+          "totalScore": "81.00",
+          "totalOutOf": "100.00",
+          "scorePercentage": "81.00",
+          "isTotalEdited": true,
+          "originalTotalScore": "80.00",
+          "isPublished": true,
+          "publishedAt": "2026-03-10T10:30:00.000Z",
+          "createdAt": "2026-03-09T08:00:00.000Z",
+          "updatedAt": "2026-03-10T10:00:00.000Z",
+          "timestamp": "2026-03-10T10:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "subFestId": "5a9da3b1-f7a5-4d54-b2a4-6c014d4b411a",
+      "subFestName": "Demo Pool A",
+      "programmeId": "e4c8b0d2-3f5a-4b67-9c89-0d1e2f3a4b5c",
+      "programmeCode": "G-201",
+      "programmeName": "Demo Group Song",
+      "programmeType": "GROUP",
+      "status": "EVALUATED",
+      "category": { "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7", "name": "Junior" },
+      "allowedCategories": [
+        { "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7", "name": "Junior" }
+      ],
+      "skills": [
+        { "id": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d", "name": "Music" }
+      ],
+      "collections": [],
+      "results": [
+        {
+          "id": "c2d3e4f5-a6b7-4c89-8d0e-1f2a3b4c5d6e",
+          "type": "GROUP",
+          "registrationId": null,
+          "groupRegistrationId": "22222222-bbbb-4ccc-8ddd-000000000001",
+          "code": "A",
+          "chestNo": null,
+          "name": "Team Falcon Group",
+          "members": [
+            { "chestNo": "101", "name": "Demo Candidate", "categoryId": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7" },
+            { "chestNo": "102", "name": "Demo Member", "categoryId": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7" }
+          ],
+          "team": { "id": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "name": "Team Falcon", "displayName": "Falcon" },
+          "category": { "id": "7f1a2b3c-4d5e-4f60-8a71-92b3c4d5e6f7", "name": "Junior" },
+          "pool": "Demo Pool A",
+          "position": 1,
+          "rank": 1,
+          "grade": "A",
+          "positionPoints": "10.00",
+          "gradePoints": "5.00",
+          "totalPoints": "15.00",
+          "candidatePoints": null,
+          "teamPoints": "15.00",
+          "totalScore": "88.00",
+          "totalOutOf": "100.00",
+          "scorePercentage": "88.00",
+          "isTotalEdited": false,
+          "originalTotalScore": null,
+          "isPublished": false,
+          "publishedAt": null,
+          "createdAt": "2026-03-10T12:00:00.000Z",
+          "updatedAt": "2026-03-11T09:00:00.000Z",
+          "timestamp": "2026-03-11T09:00:00.000Z"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Errors
+
+| Code | Meaning |
+| :--- | :--- |
+| `400` | A query parameter is invalid. |
+| `401` | The key is missing, invalid or expired. |
+| `403` | The key does not have internal access. |
+| `429` | You went over the rate limit. |

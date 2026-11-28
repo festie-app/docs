@@ -38,6 +38,51 @@ Categories group candidates by their age or educational level. To manage categor
 
 ---
 
+## Import max points for many categories
+
+Use this to set the max points of many categories at once from a spreadsheet.
+
+**Who can do it:** admins with the **Import** permission on Categories.
+
+1. Open the **Categories** page.
+2. Click **Import max points**.
+3. Download a file to start from:
+   - **Sample Excel** gives you an empty example.
+   - **Current max points** gives you the values that are set now.
+4. Fill in the file and save it as CSV or XLSX. It can have up to 500 rows.
+5. Upload the file.
+6. Check the preview. Each row shows **Ready** or an error. Rows with errors are skipped.
+7. Click **Save (n)**, where n is the number of rows that will be saved.
+8. On the result screen, see how many rows were **Uploaded**, **Saved** and **Failed**, with the reason for each failure. Click **Go to categories** to leave, or **Import another** to upload a new file.
+
+### Columns
+
+Use one row for each category.
+
+| Column | What to enter |
+| --- | --- |
+| `Category` | The category name. |
+| `Candidate Max Points` | The most a candidate can score in this category. |
+| `Team Max Points` | The most a team can score in this category. |
+| `Team Max Points Mode` | `Uniform` (one value for every team) or `Per team`. |
+| One column per team | Optional. The column header is the team name or display name. |
+
+### Set a different max for each team
+
+1. Add a column for each team you want to change. Use the team's name or display name as the header.
+2. Fill in a team's cell to set that team's own max. The category switches to **Per team**.
+3. Leave a cell blank to keep the current value.
+
+<Warning>
+  If a row's mode is `Uniform`, its team cells must be empty. A filled team cell on a `Uniform` row is an error. If a column header doesn't match any team or any column above, the whole file is rejected.
+</Warning>
+
+<Note>
+  If sync is on, category-level values (candidate max, team max and mode) are copied to your other sub-fests. Per-team values are not copied.
+</Note>
+
+---
+
 ## Managing Teams
 
 Teams group candidates for registrations, overall scoring, and reports. Navigate to the **Teams** section from the dashboard or search bar.

@@ -175,6 +175,7 @@
                   "api/internal/teams-and-categories",
                   "api/internal/candidates",
                   "api/internal/programmes",
+                  "api/internal/programmes-with-results",
                   "api/internal/results-and-scores",
                   "api/internal/schedules-and-toppers",
                   "api/internal/medals-and-summary"
