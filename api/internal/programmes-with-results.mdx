@@ -52,8 +52,14 @@ Maximum points and teams are the same for every programme of a subfest. We list 
 1. Take the `subFestId` of the programme and find that subfest in `subFests`.
 2. In that subfest, find the category with the same `id` as the `category.id` of the result.
 3. The `candidateMaxPoints` and `teamMaxPoints` of that category are the maximum points of the category.
-4. For the maximum points of a skill, look in the `skills` of that category. Find the skill by `skillId`. The skills of the programme are in the `skills` of the programme. If the skill has `teamMaxPointsMode` `PER_TEAM`, find the team by `teamId` in the `teams` of that skill for the team maximum.
-5. For the maximum points of the team, look in the `participatingTeams` of that category. Find the team by `teamId`, which is the `team.id` of the result.
+4. For the maximum points of the team, look in the `participatingTeams` of that category. Find the team by `teamId`, which is the `team.id` of the result.
+
+#### How to read skill max points
+
+The skills of the programme are in the `skills` of the programme.
+
+- **Candidate maximum:** the candidate maximum is set per category. In the subfest, find the category of the result, then find the skill by `skillId` in the `skills` of that category. Use its `candidateMaxPoints`.
+- **Team maximum:** the team maximum is set once per skill, not per category. In the subfest, find the skill by `id` in `skills`. If its `teamMaxPointsMode` is `UNIFORM`, use its `teamMaxPoints`. If it is `PER_TEAM`, find the team by `teamId` in the `teams` of that skill.
 
 A maximum that is not set is `null`.
 
@@ -80,7 +86,7 @@ Each item of `subFests` is a subfest.
 | `candidateMaxPoints` | The maximum points for a candidate in this category, or `null`. |
 | `teamMaxPoints` | The maximum points for a team in this category, or `null`. |
 | `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. With `PER_TEAM`, each team can have its own maximum. |
-| `skills` | The maximum points of each skill in this category. See [Category skill fields](#category-skill-fields). |
+| `skills` | The candidate maximum points of each skill in this category. See [Category skill fields](#category-skill-fields). |
 | `participatingTeams` | The teams that take part in this category. Each item has `teamId` and `teamMaxPoints`. In `PER_TEAM` mode this is the own maximum of the team if it is set. Otherwise it is the `teamMaxPoints` of the category. |
 
 <Note>
@@ -89,16 +95,17 @@ Each item of `subFests` is a subfest.
 
 #### Category skill fields
 
-Each item of `skills` in a category is one skill's maximum points in that category.
+Each item of `skills` in a category is one skill's candidate maximum in that category. The team maximum of a skill is in the subfest `skills`. See [Skill fields](#skill-fields).
 
 | Field | Description |
 | :--- | :--- |
 | `skillId` | The skill ID. |
 | `name` | The skill name. |
 | `candidateMaxPoints` | The maximum points for a candidate in this skill and category, or `null`. |
-| `teamMaxPoints` | The maximum points for a team in this skill and category, or `null`. With `PER_TEAM`, this is the default for teams without their own value. |
-| `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. The mode is set per skill, so it is the same in every category. |
-| `teams` | With `PER_TEAM`, every team that takes part in this category. Each item has `teamId` and `teamMaxPoints`: the team's own maximum if it is set, otherwise the `teamMaxPoints` of this skill and category, or `null`. With `UNIFORM`, an empty array. |
+
+<Note>
+  `teamMaxPoints`, `teamMaxPointsMode` and `teams` are no longer returned here. Read them from the subfest `skills`.
+</Note>
 
 #### Team fields
 
@@ -117,7 +124,9 @@ Each item of `skills` in a category is one skill's maximum points in that catego
 | `id` | The skill ID. |
 | `name` | The skill name. |
 | `description` | The skill description, or `null`. |
+| `teamMaxPoints` | The maximum points for a team in this skill, or `null`. With `PER_TEAM`, this is the default for teams without their own value. |
 | `teamMaxPointsMode` | `UNIFORM` or `PER_TEAM`. With `PER_TEAM`, each team can have its own maximum for this skill. |
+| `teams` | With `PER_TEAM`, every team of the subfest. Each item has `teamId` and `teamMaxPoints`: the team's own maximum if it is set, otherwise the `teamMaxPoints` of the skill, or `null`. With `UNIFORM`, an empty array. |
 
 #### Programme fields
 
@@ -213,7 +222,7 @@ The subfest has two categories: `General` (common) and `Junior`. The first progr
           "teamMaxPoints": "20.00",
           "teamMaxPointsMode": "UNIFORM",
           "skills": [
-            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "10.00", "teamMaxPoints": "20.00", "teamMaxPointsMode": "UNIFORM", "teams": [] }
+            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "10.00" }
           ],
           "participatingTeams": [
             { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "20.00" },
@@ -229,18 +238,8 @@ The subfest has two categories: `General` (common) and `Junior`. The first progr
           "teamMaxPoints": "30.00",
           "teamMaxPointsMode": "PER_TEAM",
           "skills": [
-            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "8.00", "teamMaxPoints": "16.00", "teamMaxPointsMode": "UNIFORM", "teams": [] },
-            {
-              "skillId": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d",
-              "name": "Music",
-              "candidateMaxPoints": null,
-              "teamMaxPoints": "30.00",
-              "teamMaxPointsMode": "PER_TEAM",
-              "teams": [
-                { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "24.00" },
-                { "teamId": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "teamMaxPoints": "30.00" }
-              ]
-            }
+            { "skillId": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "candidateMaxPoints": "8.00" },
+            { "skillId": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d", "name": "Music", "candidateMaxPoints": null }
           ],
           "participatingTeams": [
             { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "25.00" },
@@ -253,8 +252,18 @@ The subfest has two categories: `General` (common) and `Junior`. The first progr
         { "id": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "name": "Team Hawk", "displayName": "Hawk", "colorCode": "#FF8C00", "participatesInAllCategories": true }
       ],
       "skills": [
-        { "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "description": "Demo skill description", "teamMaxPointsMode": "UNIFORM" },
-        { "id": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d", "name": "Music", "description": null, "teamMaxPointsMode": "PER_TEAM" }
+        { "id": "a1b2c3d4-e5f6-4a78-9b0c-1d2e3f4a5b6c", "name": "Speech", "description": "Demo skill description", "teamMaxPoints": "36.00", "teamMaxPointsMode": "UNIFORM", "teams": [] },
+        {
+          "id": "b2c3d4e5-f6a7-4b89-8c1d-2e3f4a5b6c7d",
+          "name": "Music",
+          "description": null,
+          "teamMaxPoints": "30.00",
+          "teamMaxPointsMode": "PER_TEAM",
+          "teams": [
+            { "teamId": "f1e2d3c4-b5a6-4978-8a9b-0c1d2e3f4a5b", "teamMaxPoints": "24.00" },
+            { "teamId": "e2d3c4b5-a697-4887-9ab0-1c2d3e4f5a6b", "teamMaxPoints": "30.00" }
+          ]
+        }
       ]
     }
   ],
