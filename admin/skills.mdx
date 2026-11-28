@@ -1,6 +1,6 @@
 ---
 title: "Skills"
-description: "Tag programmes with skills and set each skill's max points per category."
+description: "Tag programmes with skills and set each skill's candidate and team max points."
 ---
 
 Skills group programmes by the ability they test, such as "Language" or "Athletics". You use them for skill toppers and analytics.
@@ -24,7 +24,7 @@ The **Skills** page shows every skill as a card with its name and description.
 
 1. Click **Add** to create one skill. Enter a name and description, then save. The new skill opens right away.
 2. Click **Import** to add many skills from a file.
-3. Click **Import from sub-fest** to copy skills from another sub-fest. Each skill's candidate and team max points come along too, matched by category name. The team max mode and per-team values are not copied.
+3. Click **Import from sub-fest** to copy skills from another sub-fest. Each skill's candidate max points (matched by category name), team max points and team max mode come along too. Per-team values are not copied.
 
 ## Edit or delete a skill
 
@@ -34,14 +34,17 @@ The **Skills** page shows every skill as a card with its name and description.
 
 ## Set a skill's max points
 
-Max points are the most a candidate or team can score in this skill, for each category. Skill toppers ranked by percentage use them. See [How skill topper percentages work](/admin/toppers#how-skill-topper-percentages-work).
+Max points are the most a candidate or team can score in this skill. Skill toppers ranked by percentage use them. See [How skill topper percentages work](/admin/toppers#how-skill-topper-percentages-work).
+
+- **Candidate max points** are set per category.
+- **Team max points** are set once for the whole skill. They are not split by category.
 
 1. Open the skill.
-2. Click **Set max points** at the top. If max points are already set, the button says **Edit max points**. The max points page opens.
+2. Click **Set max points** at the top. If max points are already set, the button says **Edit max points**. The page "*skill name* · Max points" opens.
 3. Under **Candidate max points**, enter a max for each category. Use 0 or more. Decimals are fine. Leave a box empty if you don't want to set it.
 4. Under **Team max points**, pick how teams get their max:
-   - **Same for all teams**: one max per category for every team.
-   - **Per team**: each team can have its own max. A blank team box uses the category value.
+   - **Same for all teams**: one max for every team.
+   - **Per team**: each team can have its own max.
 5. Enter the team max points. See the next sections for each option.
 6. Click **Save**. You go back to the skill's page.
 
@@ -55,36 +58,36 @@ If you only have read permission, the button says **Max points**. You can see th
 
 ### Same for all teams
 
-Enter one max for each category. Every team in that category uses it.
+Enter one value in **Team max points**. Every team uses it.
 
 ### Per team
 
-Each category shows a **Default** box and a list of the teams that take part in that category.
+You see a **Default** box and a list of every team.
 
-1. In **Default**, enter the category value. Teams without their own value use it. If you leave **Default** blank, it counts as 0.
+1. In **Default**, enter the value for teams without their own value. If you leave **Default** blank, it counts as 0.
 2. Enter a max in a team's box to give that team its own value. Leave it blank to use the default.
-3. To give every team in the category the same value, type it in **Fill all** and click **Apply to all**.
+3. To give every team the same value, type it in **Fill all** and click **Apply to all**.
 4. To clear every team's own value, click **Reset all**. All teams then use the default.
 
-You can copy a column of numbers from a spreadsheet and paste it into a team box. The values fill that team and the teams below it, in order.
+You can copy a column of numbers from a spreadsheet and paste it into a team box. The values fill that team and the teams below it, in order. Press Enter or the arrow keys to move between boxes.
 
 If you switch back to **Same for all teams**, the per-team values are kept but not used.
 
 <Note>
-  If you sync **Categories (skills, custom)** to other sub-fests, the team max mode and the category values are copied to them too. Per-team values are not copied, because teams are different in each sub-fest.
+  If you sync **Categories (skills, custom)** to other sub-fests, the candidate max points, the team max points and the team max mode are copied to them too. **Import from sub-fest** copies them the same way. Per-team values are not copied, because teams are different in each sub-fest.
 </Note>
 
 ## Import possible points for many skills
 
-Use this to set the candidate and team max points of many skills and categories at once, including per-team values.
+Use this to set the candidate and team max points of many skills at once, including per-team values.
 
 **Who can do it:** you need **Skills & Criteria** write permission. On desktop, **Import possible points** can be inside the **...** menu at the top of the page.
 
 1. Open **Programme** > **Skills**.
 2. Click **Import possible points**.
 3. Download a file to start from:
-   - **Sample Excel** gives you an example with the right columns. It shows the first few teams as columns.
-   - **Current possible points** gives you the values that are set now, with a column for every team. It lists only skill and category pairs that already have values.
+   - **Sample Excel** gives you an example with the right columns and layout. It shows the first few teams as columns.
+   - **Current possible points** gives you the values that are set now. It has one row per skill with the team values, and one row per category that has a candidate max.
 4. Fill in the file and save it as CSV or XLSX. It can have up to 2000 rows.
 5. Upload the file.
 6. Check the preview. Each row shows **Ready** or an error. Rows with errors are skipped.
@@ -93,26 +96,27 @@ Use this to set the candidate and team max points of many skills and categories 
 
 ### Columns
 
-Use one row for each skill and category pair.
-
 | Column | What to enter |
 | --- | --- |
 | **Skill** | The skill name. |
-| **Category** | The category name. |
-| **Candidate Max Points** | The most a candidate can score in this skill and category. |
-| **Team Max Points** | The category value for teams in this skill and category. With **Per team**, this is the default. |
+| **Category** | The category name. Leave it blank on the row with the skill's team values. |
+| **Candidate Max Points** | The most a candidate in this category can score in this skill. |
+| **Team Max Points** | The team max for the whole skill. With **Per team**, this is the default. |
 | **Team Max Points Mode** | **Uniform** (same for all teams) or **Per team**. |
-| One column per team | The team's own max in this skill and category. Use the team name as the column header. |
+| One column per team | The team's own max for the whole skill. Use the team name as the column header. |
 
-- Only the skill and category pairs in your file change. Everything else stays as it is.
-- Leave **Candidate Max Points** or **Team Max Points** blank to clear that value.
+### How to fill the rows
+
+- **Candidate max:** use one row per skill and category. Fill in **Category** and **Candidate Max Points**. A blank **Candidate Max Points** clears that category's value.
+- **Team max:** team values belong to the whole skill. Put **Team Max Points**, **Team Max Points Mode** and the team columns on a row with **Category** left blank.
 - Leave a team cell blank to keep that team's current value.
-- The mode applies to the whole skill, not one category. Use the same mode on every row of a skill. If you leave it blank, the mode stays as it is, unless the row has team values. Then the skill switches to **Per team**.
+- Rows of the same skill must not give different team values or modes. That is an error.
 - Team values with mode **Uniform** are an error.
+- Only the skills and categories in your file change. Everything else stays as it is.
 - Every column that is not one of the columns above must be a team name. Other columns stop the import.
 
 <Note>
-  If you sync **Categories (skills, custom)** to other sub-fests, imported category values and modes are copied to them too. Per-team values are not.
+  If you sync **Categories (skills, custom)** to other sub-fests, imported candidate max points, team max points and modes are copied to them too. Per-team values are not.
 </Note>
 
 ## Add or remove programmes
@@ -124,3 +128,9 @@ The **Programmes** table on the skill's page lists the programmes tagged with th
 3. To remove programmes, select their rows and click **Remove from skill**.
 
 You can also tag a programme with skills from the programme's own settings. See [Programmes](/admin/programmes).
+
+### Change skills after results
+
+You can add or remove programmes at any result status, even after results are checked or published. Results and points don't change.
+
+Toppers with a **Skill** dimension get a **Needs regeneration** badge. Click **Regenerate** on them to update the standings. See [Toppers](/admin/toppers).
